@@ -475,14 +475,12 @@
         }
 
         .auth-form {
-            display: none;
             animation: fadeIn 0.5s ease;
-        }
-
-        .auth-form.active {
             display: block;
         }
 
+        /* Removed display:none from auth-form - this was the key fix */
+        
         .form-group {
             margin-bottom: 25px;
             position: relative;
@@ -1097,7 +1095,7 @@
                     <p>Secure your financial future with us</p>
                 </div>
                 
-                <form class="auth-form active" id="login-form">
+                <form class="auth-form" id="login-form">
                     <div class="form-group">
                         <label for="login-email">Email</label>
                         <div class="input-with-icon">
