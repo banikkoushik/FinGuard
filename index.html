@@ -34,6 +34,7 @@
             display: flex;
             overflow: hidden;
             position: relative;
+            padding: 20px;
         }
 
         /* Background elements */
@@ -147,6 +148,27 @@
             margin-bottom: 40px;
         }
 
+        .features-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--accent-light);
+            position: relative;
+            padding-left: 10px;
+        }
+
+        .features-title::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 80%;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
         .features {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -162,6 +184,7 @@
             border-radius: 10px;
             border: 1px solid var(--glass-border);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: default;
         }
 
         .feature:hover {
@@ -262,7 +285,7 @@
 
         input {
             width: 100%;
-            padding: 15px 15px 15px 45px;
+            padding: 15px 45px 15px 45px;
             background: rgba(15, 28, 46, 0.5);
             border: 1px solid var(--glass-border);
             border-radius: 10px;
@@ -462,6 +485,43 @@
             background: var(--error);
         }
 
+        /* Security indicators */
+        .security-indicator {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .security-indicator i {
+            color: var(--accent);
+            margin-right: 5px;
+        }
+
+        /* Terms and conditions */
+        .terms {
+            display: flex;
+            align-items: flex-start;
+            margin: 20px 0;
+        }
+
+        .terms input {
+            width: auto;
+            margin-top: 3px;
+            margin-right: 10px;
+        }
+
+        .terms label {
+            font-size: 13px;
+            opacity: 0.8;
+        }
+
+        .terms a {
+            color: var(--accent-light);
+            text-decoration: none;
+        }
+
         /* Animations */
         @keyframes float {
             0% {
@@ -486,11 +546,25 @@
         }
 
         /* Responsive design */
+        @media (max-width: 1200px) {
+            .container {
+                max-width: 1000px;
+            }
+            
+            .brand-section {
+                padding: 30px;
+            }
+            
+            .auth-section {
+                padding: 40px 30px;
+            }
+        }
+
         @media (max-width: 992px) {
             .container {
                 flex-direction: column;
-                max-width: 600px;
-                margin: 20px;
+                max-width: 700px;
+                margin: 20px auto;
             }
             
             .brand-section, .auth-section {
@@ -503,6 +577,60 @@
             
             .features {
                 grid-template-columns: 1fr;
+                max-width: 100%;
+            }
+            
+            .auth-section {
+                padding: 40px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                margin: 10px auto;
+                border-radius: 15px;
+            }
+            
+            .brand-section, .auth-section {
+                padding: 25px;
+            }
+            
+            .auth-tabs {
+                flex-direction: column;
+            }
+            
+            .auth-tab {
+                margin-bottom: 5px;
+            }
+            
+            .brand-logo {
+                margin-bottom: 25px;
+            }
+            
+            .logo-icon {
+                width: 50px;
+                height: 50px;
+            }
+            
+            .logo-text {
+                font-size: 26px;
+            }
+            
+            .brand-tagline {
+                font-size: 19px;
+            }
+            
+            .auth-header h2 {
+                font-size: 24px;
+            }
+            
+            .social-icon {
+                width: 45px;
+                height: 45px;
             }
         }
     </style>
@@ -527,6 +655,7 @@
             <h1 class="brand-tagline">The Future of Financial Security & Wealth Management</h1>
             <p class="brand-description">FinGuard combines cutting-edge technology with intuitive design to safeguard your financial future. Experience banking reimagined with military-grade security and AI-powered insights.</p>
             
+            <h3 class="features-title">Why Choose FinGuard?</h3>
             <div class="features">
                 <div class="feature">
                     <i class="fas fa-fingerprint"></i>
@@ -544,6 +673,19 @@
                     <i class="fas fa-chart-line"></i>
                     <span>Real-time Analytics</span>
                 </div>
+                <div class="feature">
+                    <i class="fas fa-money-bill-wave"></i>
+                    <span>Automated Savings</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-shield-virus"></i>
+                    <span>Fraud Detection</span>
+                </div>
+            </div>
+            
+            <div class="security-indicator">
+                <i class="fas fa-shield-alt"></i>
+                <span>All data is encrypted end-to-end and never stored on our servers</span>
             </div>
         </div>
         
@@ -574,7 +716,7 @@
                     <div class="input-with-icon">
                         <i class="fas fa-lock"></i>
                         <input type="password" id="login-password" placeholder="••••••••" required>
-                        <i class="fas fa-eye password-toggle"></i>
+                        <i class="fas fa-eye password-toggle" id="login-eye"></i>
                     </div>
                 </div>
                 
@@ -586,7 +728,9 @@
                     <a href="#" class="forgot-password">Forgot password?</a>
                 </div>
                 
-                <button type="submit" class="submit-btn">Login to Dashboard</button>
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-lock"></i> Login to Dashboard
+                </button>
                 
                 <div class="social-login">
                     <p>Or continue with</p>
@@ -627,7 +771,7 @@
                     <div class="input-with-icon">
                         <i class="fas fa-lock"></i>
                         <input type="password" id="signup-password" placeholder="••••••••" required>
-                        <i class="fas fa-eye password-toggle"></i>
+                        <i class="fas fa-eye password-toggle" id="signup-eye"></i>
                     </div>
                     <div class="password-strength">
                         <div class="strength-meter">
@@ -642,11 +786,21 @@
                     <div class="input-with-icon">
                         <i class="fas fa-lock"></i>
                         <input type="password" id="signup-confirm" placeholder="••••••••" required>
-                        <i class="fas fa-eye password-toggle"></i>
+                        <i class="fas fa-eye password-toggle" id="confirm-eye"></i>
+                    </div>
+                    <div id="password-match" class="strength-text" style="margin-top: 5px; display: none; color: var(--error);">
+                        <i class="fas fa-exclamation-circle"></i> Passwords do not match
                     </div>
                 </div>
                 
-                <button type="submit" class="submit-btn">Create Secure Account</button>
+                <div class="terms">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-user-plus"></i> Create Secure Account
+                </button>
                 
                 <div class="social-login">
                     <p>Or sign up with</p>
@@ -742,11 +896,12 @@
         
         // Password strength indicator
         const passwordInput = document.getElementById('signup-password');
+        const confirmInput = document.getElementById('signup-confirm');
         const strengthFill = document.getElementById('password-strength-fill');
         const strengthText = document.getElementById('password-strength-text');
+        const passwordMatch = document.getElementById('password-match');
         
-        passwordInput.addEventListener('input', () => {
-            const password = passwordInput.value;
+        function checkPasswordStrength(password) {
             let strength = 0;
             
             // Check password length
@@ -774,6 +929,28 @@
                 strengthFill.style.background = '#2ecc71';
                 strengthText.textContent = 'Strong';
             }
+        }
+        
+        function checkPasswordMatch() {
+            if (passwordInput.value && confirmInput.value) {
+                if (passwordInput.value !== confirmInput.value) {
+                    passwordMatch.style.display = 'block';
+                    return false;
+                } else {
+                    passwordMatch.style.display = 'none';
+                    return true;
+                }
+            }
+            return true;
+        }
+        
+        passwordInput.addEventListener('input', () => {
+            checkPasswordStrength(passwordInput.value);
+            checkPasswordMatch();
+        });
+        
+        confirmInput.addEventListener('input', () => {
+            checkPasswordMatch();
         });
         
         // Notification system
@@ -799,9 +976,9 @@
             // Simulate login process
             setTimeout(() => {
                 if (email.includes('@') && password.length > 5) {
-                    showNotification('Login successful! Redirecting...', 'success');
+                    showNotification('Login successful! Redirecting to dashboard...', 'success');
                 } else {
-                    showNotification('Invalid email or password', 'error');
+                    showNotification('Invalid email or password. Please try again.', 'error');
                 }
             }, 1000);
         });
@@ -813,8 +990,8 @@
             const password = document.getElementById('signup-password').value;
             const confirmPassword = document.getElementById('signup-confirm').value;
             
-            // Validate form
-            if (password !== confirmPassword) {
+            // Validate password match
+            if (!checkPasswordMatch()) {
                 showNotification('Passwords do not match', 'error');
                 return;
             }
@@ -826,14 +1003,33 @@
             
             // Simulate signup process
             setTimeout(() => {
-                showNotification('Account created successfully!', 'success');
+                showNotification('Account created successfully! Welcome to FinGuard', 'success');
+                
+                // Switch to login tab after successful signup
+                tabs.forEach(tab => {
+                    if (tab.getAttribute('data-tab') === 'login') {
+                        tab.click();
+                    }
+                });
             }, 1000);
         });
         
         // Forgot password functionality
         document.querySelector('.forgot-password').addEventListener('click', (e) => {
             e.preventDefault();
-            showNotification('Password reset instructions sent to your email', 'success');
+            const email = document.getElementById('login-email').value;
+            
+            if (email) {
+                showNotification(`Password reset instructions sent to ${email}`, 'success');
+            } else {
+                showNotification('Please enter your email address first', 'error');
+            }
+        });
+        
+        // Initialize password eye icons
+        document.querySelectorAll('.password-toggle').forEach(icon => {
+            icon.classList.add('fa-eye');
+            icon.classList.remove('fa-eye-slash');
         });
     </script>
 </body>
