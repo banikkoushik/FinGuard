@@ -7,31 +7,66 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        /* CSS Variables for Theming */
+        :root {
+            /* Dark Theme */
+            --primary-dark: #0f1c2e;
+            --secondary-dark: #1f3a5f;
+            --accent-dark: #4dccbd;
+            --accent-light-dark: #7de6da;
+            --accent-dark-dark: #3aa89b;
+            --text-dark: #f0f6fc;
+            --glass-dark: rgba(31, 58, 95, 0.5);
+            --glass-border-dark: rgba(109, 175, 219, 0.2);
+            
+            /* Light Theme */
+            --primary-light: #f0f8ff;
+            --secondary-light: #d1e7ff;
+            --accent-light: #4dccbd;
+            --accent-light-light: #7de6da;
+            --accent-dark-light: #3aa89b;
+            --text-light: #1a2a3a;
+            --glass-light: rgba(209, 231, 255, 0.6);
+            --glass-border-light: rgba(109, 175, 219, 0.3);
+            
+            /* Current Theme */
+            --primary: var(--primary-dark);
+            --secondary: var(--secondary-dark);
+            --accent: var(--accent-dark);
+            --accent-light: var(--accent-light-dark);
+            --accent-dark: var(--accent-dark-dark);
+            --text: var(--text-dark);
+            --glass: var(--glass-dark);
+            --glass-border: var(--glass-border-dark);
+            --background: linear-gradient(135deg, var(--primary), #0a1428);
+            --feature-bg: rgba(31, 58, 95, 0.3);
+        }
+
+        .light-theme {
+            --primary: var(--primary-light);
+            --secondary: var(--secondary-light);
+            --accent: var(--accent-light);
+            --accent-light: var(--accent-light-light);
+            --accent-dark: var(--accent-dark-light);
+            --text: var(--text-light);
+            --glass: var(--glass-light);
+            --glass-border: var(--glass-border-light);
+            --background: linear-gradient(135deg, #f0f8ff, #d1e7ff);
+            --feature-bg: rgba(209, 231, 255, 0.5);
+        }
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-        }
-
-        :root {
-            --primary: #0f1c2e;
-            --secondary: #1f3a5f;
-            --accent: #4dccbd;
-            --accent-light: #7de6da;
-            --accent-dark: #3aa89b;
-            --text: #f0f6fc;
-            --glass: rgba(31, 58, 95, 0.5);
-            --glass-border: rgba(109, 175, 219, 0.2);
-            --success: #2ecc71;
-            --error: #e74c3c;
+            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
         }
 
         body {
             font-family: 'Exo 2', sans-serif;
-            background: linear-gradient(135deg, var(--primary), #0a1428);
+            background: var(--background);
             color: var(--text);
             min-height: 100vh;
-            display: flex;
             overflow-x: hidden;
             position: relative;
             padding: 20px;
@@ -73,19 +108,169 @@
             top: 0;
         }
 
+        /* Splash Screen */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0a1428, #0f1c2e);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 1;
+            transition: opacity 1s ease, transform 1.5s ease;
+        }
+
+        .logo-animation {
+            width: 150px;
+            height: 150px;
+            position: relative;
+            perspective: 1000px;
+            margin-bottom: 30px;
+        }
+
+        .logo-3d {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotate 8s infinite linear;
+        }
+
+        .logo-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(77, 204, 189, 0.8);
+            border-radius: 20px;
+            backface-visibility: hidden;
+            box-shadow: 0 0 30px rgba(77, 204, 189, 0.6);
+        }
+
+        .logo-face i {
+            font-size: 70px;
+            color: #0f1c2e;
+        }
+
+        .logo-face.front {
+            transform: translateZ(75px);
+        }
+
+        .logo-face.back {
+            transform: rotateY(180deg) translateZ(75px);
+        }
+
+        .logo-face.right {
+            transform: rotateY(90deg) translateZ(75px);
+        }
+
+        .logo-face.left {
+            transform: rotateY(-90deg) translateZ(75px);
+        }
+
+        .logo-face.top {
+            transform: rotateX(90deg) translateZ(75px);
+        }
+
+        .logo-face.bottom {
+            transform: rotateX(-90deg) translateZ(75px);
+        }
+
+        .splash-text {
+            text-align: center;
+        }
+
+        .splash-text h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 42px;
+            margin-bottom: 20px;
+            background: linear-gradient(to right, #7de6da, #4dccbd);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 2px;
+        }
+
+        .splash-text p {
+            font-size: 18px;
+            opacity: 0.8;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .theme-toggle {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-size: 20px;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent);
+            color: var(--primary);
+            transform: rotate(15deg);
+        }
+
+        .auth-button {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 12px 25px;
+            color: var(--text);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .auth-button:hover {
+            background: var(--accent);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
         /* Main container */
         .container {
             display: flex;
             width: 100%;
             max-width: 1400px;
-            margin: auto;
+            margin: 80px auto 40px;
             border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(10px);
-            background: rgba(15, 28, 46, 0.7);
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--glass-border);
-            min-height: 80vh;
+            min-height: 70vh;
             flex-wrap: wrap;
         }
 
@@ -100,6 +285,10 @@
             justify-content: center;
             position: relative;
             overflow: hidden;
+        }
+
+        .light-theme .brand-section {
+            background: linear-gradient(135deg, rgba(240, 248, 255, 0.8), rgba(209, 231, 255, 0.8));
         }
 
         .brand-logo {
@@ -182,7 +371,7 @@
             display: flex;
             align-items: center;
             padding: 12px 15px;
-            background: rgba(31, 58, 95, 0.3);
+            background: var(--feature-bg);
             border-radius: 10px;
             border: 1px solid var(--glass-border);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -198,6 +387,19 @@
             color: var(--accent);
             margin-right: 10px;
             font-size: 18px;
+        }
+
+        .security-indicator {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .security-indicator i {
+            color: var(--accent);
+            margin-right: 5px;
         }
 
         /* Auth section */
@@ -236,6 +438,10 @@
             background: rgba(15, 28, 46, 0.5);
             border-radius: 12px;
             padding: 5px;
+        }
+
+        .light-theme .auth-tabs {
+            background: rgba(194, 214, 255, 0.5);
         }
 
         .auth-tab {
@@ -298,6 +504,10 @@
             transition: all 0.3s ease;
         }
 
+        .light-theme input {
+            background: rgba(194, 214, 255, 0.5);
+        }
+
         input:focus {
             outline: none;
             border-color: var(--accent);
@@ -320,8 +530,16 @@
             transition: background 0.3s ease;
         }
 
+        .light-theme .password-toggle-container {
+            background: rgba(194, 214, 255, 0.3);
+        }
+
         .password-toggle-container:hover {
             background: rgba(31, 58, 95, 0.5);
+        }
+
+        .light-theme .password-toggle-container:hover {
+            background: rgba(194, 214, 255, 0.5);
         }
 
         .password-toggle {
@@ -443,6 +661,10 @@
             transition: all 0.3s ease;
         }
 
+        .light-theme .social-icon {
+            background: rgba(194, 214, 255, 0.5);
+        }
+
         .social-icon:hover {
             background: var(--accent);
             color: var(--primary);
@@ -463,6 +685,10 @@
             border-radius: 5px;
             overflow: hidden;
             margin-right: 10px;
+        }
+
+        .light-theme .strength-meter {
+            background: rgba(0, 0, 0, 0.1);
         }
 
         .strength-fill {
@@ -497,11 +723,11 @@
         }
 
         .notification.success {
-            background: var(--success);
+            background: #2ecc71;
         }
 
         .notification.error {
-            background: var(--error);
+            background: #e74c3c;
         }
 
         /* Security indicators */
@@ -564,6 +790,11 @@
             }
         }
 
+        @keyframes rotate {
+            0% { transform: rotateX(0) rotateY(0) rotateZ(0); }
+            100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+        }
+
         /* Responsive design */
         @media (max-width: 1200px) {
             .container {
@@ -583,7 +814,7 @@
             .container {
                 flex-direction: column;
                 max-width: 700px;
-                margin: 20px auto;
+                margin: 100px auto 40px;
             }
             
             .brand-section, .auth-section {
@@ -611,7 +842,7 @@
             }
             
             .container {
-                margin: 10px auto;
+                margin: 80px auto 20px;
                 border-radius: 15px;
             }
             
@@ -652,13 +883,26 @@
                 width: 45px;
                 height: 45px;
             }
-            
-            .features {
-                grid-template-columns: 1fr;
-            }
         }
 
         @media (max-width: 480px) {
+            .header {
+                top: 10px;
+                right: 10px;
+                gap: 10px;
+            }
+            
+            .theme-toggle {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+            
+            .auth-button {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+            
             .brand-section, .auth-section {
                 padding: 20px 15px;
             }
@@ -702,11 +946,42 @@
     </style>
 </head>
 <body>
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <div class="logo-animation">
+            <div class="logo-3d">
+                <div class="logo-face front"><i class="fas fa-shield-alt"></i></div>
+                <div class="logo-face back"><i class="fas fa-shield-alt"></i></div>
+                <div class="logo-face right"><i class="fas fa-shield-alt"></i></div>
+                <div class="logo-face left"><i class="fas fa-shield-alt"></i></div>
+                <div class="logo-face top"><i class="fas fa-shield-alt"></i></div>
+                <div class="logo-face bottom"><i class="fas fa-shield-alt"></i></div>
+            </div>
+        </div>
+        <div class="splash-text">
+            <h1>FinGuard</h1>
+            <p>Securing your financial future with cutting-edge technology</p>
+        </div>
+    </div>
+    
     <!-- Background elements -->
     <div class="background-elements" id="background"></div>
     
     <!-- Notification -->
     <div class="notification" id="notification"></div>
+    
+    <!-- Header -->
+    <div class="header">
+        <button class="theme-toggle" id="themeToggle">
+            <i class="fas fa-moon"></i>
+        </button>
+        <a href="login.html" class="auth-button">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </a>
+        <a href="signup.html" class="auth-button">
+            <i class="fas fa-user-plus"></i> Sign Up
+        </a>
+    </div>
     
     <!-- Main container -->
     <div class="container">
@@ -754,142 +1029,6 @@
                 <span>All data is encrypted end-to-end and never stored on our servers</span>
             </div>
         </div>
-        
-        <!-- Auth section -->
-        <div class="auth-section">
-            <div class="auth-header">
-                <h2>Welcome to FinGuard</h2>
-                <p>Secure your financial future with us</p>
-            </div>
-            
-            <div class="auth-tabs">
-                <div class="auth-tab active" data-tab="login">Login</div>
-                <div class="auth-tab" data-tab="signup">Sign Up</div>
-            </div>
-            
-            <!-- Login Form -->
-            <form class="auth-form active" id="login-form">
-                <div class="form-group">
-                    <label for="login-email">Email</label>
-                    <div class="input-with-icon">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" id="login-email" placeholder="your.email@example.com" required>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="login-password">Password</label>
-                    <div class="input-with-icon">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="login-password" placeholder="••••••••" required>
-                        <div class="password-toggle-container" id="login-toggle">
-                            <i class="fas fa-eye password-toggle"></i>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="remember-forgot">
-                    <div class="remember">
-                        <input type="checkbox" id="remember">
-                        <label for="remember">Remember me</label>
-                    </div>
-                    <a href="#" class="forgot-password">Forgot password?</a>
-                </div>
-                
-                <button type="submit" class="submit-btn">
-                    <i class="fas fa-lock"></i> Login to Dashboard
-                </button>
-                
-                <div class="social-login">
-                    <p>Or continue with</p>
-                    <div class="social-icons">
-                        <div class="social-icon">
-                            <i class="fab fa-google"></i>
-                        </div>
-                        <div class="social-icon">
-                            <i class="fab fa-apple"></i>
-                        </div>
-                        <div class="social-icon">
-                            <i class="fab fa-microsoft"></i>
-                        </div>
-                    </div>
-                </div>
-            </form>
-            
-            <!-- Signup Form -->
-            <form class="auth-form" id="signup-form">
-                <div class="form-group">
-                    <label for="signup-name">Full Name</label>
-                    <div class="input-with-icon">
-                        <i class="fas fa-user"></i>
-                        <input type="text" id="signup-name" placeholder="John Doe" required>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="signup-email">Email</label>
-                    <div class="input-with-icon">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" id="signup-email" placeholder="your.email@example.com" required>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="signup-password">Password</label>
-                    <div class="input-with-icon">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="signup-password" placeholder="••••••••" required>
-                        <div class="password-toggle-container" id="signup-toggle">
-                            <i class="fas fa-eye password-toggle"></i>
-                        </div>
-                    </div>
-                    <div class="password-strength">
-                        <div class="strength-meter">
-                            <div class="strength-fill" id="password-strength-fill"></div>
-                        </div>
-                        <div class="strength-text" id="password-strength-text">Weak</div>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="signup-confirm">Confirm Password</label>
-                    <div class="input-with-icon">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="signup-confirm" placeholder="••••••••" required>
-                        <div class="password-toggle-container" id="confirm-toggle">
-                            <i class="fas fa-eye password-toggle"></i>
-                        </div>
-                    </div>
-                    <div id="password-match" class="strength-text" style="margin-top: 5px; display: none; color: var(--error);">
-                        <i class="fas fa-exclamation-circle"></i> Passwords do not match
-                    </div>
-                </div>
-                
-                <div class="terms">
-                    <input type="checkbox" id="terms" required>
-                    <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
-                </div>
-                
-                <button type="submit" class="submit-btn">
-                    <i class="fas fa-user-plus"></i> Create Secure Account
-                </button>
-                
-                <div class="social-login">
-                    <p>Or sign up with</p>
-                    <div class="social-icons">
-                        <div class="social-icon">
-                            <i class="fab fa-google"></i>
-                        </div>
-                        <div class="social-icon">
-                            <i class="fab fa-apple"></i>
-                        </div>
-                        <div class="social-icon">
-                            <i class="fab fa-microsoft"></i>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
     </div>
 
     <script>
@@ -930,179 +1069,46 @@
             background.appendChild(verticalLine);
         }
         
-        // Tab switching
-        const tabs = document.querySelectorAll('.auth-tab');
-        const forms = document.querySelectorAll('.auth-form');
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = themeToggle.querySelector('i');
         
-        tabs.forEach(tab => {
-            tab.addEventListener('click', () => {
-                const tabName = tab.getAttribute('data-tab');
-                
-                // Update active tab
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-                
-                // Show corresponding form
-                forms.forEach(form => {
-                    form.classList.remove('active');
-                    if (form.id === `${tabName}-form`) {
-                        form.classList.add('active');
-                    }
-                });
-            });
-        });
-        
-        // Password toggle visibility
-        const passwordToggles = document.querySelectorAll('.password-toggle-container');
-        
-        passwordToggles.forEach(toggle => {
-            toggle.addEventListener('click', () => {
-                const icon = toggle.querySelector('i');
-                const input = toggle.parentElement.querySelector('input');
-                
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
-                } else {
-                    input.type = 'password';
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
-                }
-            });
-        });
-        
-        // Password strength indicator
-        const passwordInput = document.getElementById('signup-password');
-        const confirmInput = document.getElementById('signup-confirm');
-        const strengthFill = document.getElementById('password-strength-fill');
-        const strengthText = document.getElementById('password-strength-text');
-        const passwordMatch = document.getElementById('password-match');
-        
-        function checkPasswordStrength(password) {
-            let strength = 0;
+        function setTheme(theme) {
+            document.body.className = theme;
+            localStorage.setItem('theme', theme);
             
-            // Check password length
-            if (password.length > 7) strength += 25;
-            
-            // Check for mixed case
-            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength += 25;
-            
-            // Check for numbers
-            if (password.match(/\d/)) strength += 25;
-            
-            // Check for special characters
-            if (password.match(/[^a-zA-Z0-9]/)) strength += 25;
-            
-            // Update UI
-            strengthFill.style.width = `${strength}%`;
-            
-            if (strength < 50) {
-                strengthFill.style.background = '#e74c3c';
-                strengthText.textContent = 'Weak';
-            } else if (strength < 75) {
-                strengthFill.style.background = '#f39c12';
-                strengthText.textContent = 'Medium';
+            if (theme === 'light-theme') {
+                themeIcon.className = 'fas fa-sun';
             } else {
-                strengthFill.style.background = '#2ecc71';
-                strengthText.textContent = 'Strong';
+                themeIcon.className = 'fas fa-moon';
             }
         }
         
-        function checkPasswordMatch() {
-            if (passwordInput.value && confirmInput.value) {
-                if (passwordInput.value !== confirmInput.value) {
-                    passwordMatch.style.display = 'block';
-                    return false;
-                } else {
-                    passwordMatch.style.display = 'none';
-                    return true;
-                }
-            }
-            return true;
-        }
-        
-        passwordInput.addEventListener('input', () => {
-            checkPasswordStrength(passwordInput.value);
-            checkPasswordMatch();
-        });
-        
-        confirmInput.addEventListener('input', () => {
-            checkPasswordMatch();
-        });
-        
-        // Notification system
-        function showNotification(message, type) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.className = `notification ${type} show`;
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-        
-        // Form submission
-        const loginForm = document.getElementById('login-form');
-        const signupForm = document.getElementById('signup-form');
-        
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            // Simulate login process
-            setTimeout(() => {
-                if (email.includes('@') && password.length > 5) {
-                    showNotification('Login successful! Redirecting to dashboard...', 'success');
-                } else {
-                    showNotification('Invalid email or password. Please try again.', 'error');
-                }
-            }, 1000);
-        });
-        
-        signupForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = document.getElementById('signup-name').value;
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            const confirmPassword = document.getElementById('signup-confirm').value;
-            
-            // Validate password match
-            if (!checkPasswordMatch()) {
-                showNotification('Passwords do not match', 'error');
-                return;
-            }
-            
-            if (password.length < 8) {
-                showNotification('Password must be at least 8 characters', 'error');
-                return;
-            }
-            
-            // Simulate signup process
-            setTimeout(() => {
-                showNotification('Account created successfully! Welcome to FinGuard', 'success');
-                
-                // Switch to login tab after successful signup
-                tabs.forEach(tab => {
-                    if (tab.getAttribute('data-tab') === 'login') {
-                        tab.click();
-                    }
-                });
-            }, 1000);
-        });
-        
-        // Forgot password functionality
-        document.querySelector('.forgot-password').addEventListener('click', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            
-            if (email) {
-                showNotification(`Password reset instructions sent to ${email}`, 'success');
+        themeToggle.addEventListener('click', () => {
+            if (document.body.classList.contains('light-theme')) {
+                setTheme('');
             } else {
-                showNotification('Please enter your email address first', 'error');
+                setTheme('light-theme');
             }
         });
+        
+        // Check saved theme
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme) {
+            setTheme(savedTheme);
+        }
+        
+        // Splash screen animation
+        const splashScreen = document.getElementById('splash-screen');
+        setTimeout(() => {
+            splashScreen.style.opacity = '0';
+            splashScreen.style.pointerEvents = 'none';
+            splashScreen.style.transform = 'scale(1.2)';
+            
+            setTimeout(() => {
+                splashScreen.style.display = 'none';
+            }, 1000);
+        }, 4000);
     </script>
 </body>
 </html>
