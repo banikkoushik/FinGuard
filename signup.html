@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinGuard | Sign Up</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="auth-styles.css">
+</head>
+<body>
+    <!-- Background elements -->
+    <div class="background-elements" id="background"></div>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+    
+    <!-- Header -->
+    <div class="header">
+        <button class="theme-toggle" id="themeToggle">
+            <i class="fas fa-moon"></i>
+        </button>
+        <a href="index.html" class="auth-button">
+            <i class="fas fa-home"></i> Home
+        </a>
+    </div>
+    
+    <!-- Back Button -->
+    <a href="index.html" class="back-button">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+    
+    <!-- Main container -->
+    <div class="auth-container">
+        <div class="auth-section">
+            <div class="auth-header">
+                <div class="auth-logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="logo-text">FinGuard</div>
+                </div>
+                <h2>Create Your FinGuard Account</h2>
+                <p>Secure your financial future with us</p>
+            </div>
+            
+            <form class="auth-form" id="signup-form">
+                <div class="form-group">
+                    <label for="signup-name">Full Name</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="signup-name" placeholder="John Doe" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="signup-email">Email</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="signup-email" placeholder="your.email@example.com" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="signup-password">Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="signup-password" placeholder="••••••••" required>
+                        <div class="password-toggle-container" id="signup-toggle">
+                            <i class="fas fa-eye password-toggle"></i>
+                        </div>
+                    </div>
+                    <div class="password-strength">
+                        <div class="strength-meter">
+                            <div class="strength-fill" id="password-strength-fill"></div>
+                        </div>
+                        <div class="strength-text" id="password-strength-text">Weak</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="signup-confirm">Confirm Password</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="signup-confirm" placeholder="••••••••" required>
+                        <div class="password-toggle-container" id="confirm-toggle">
+                            <i class="fas fa-eye password-toggle"></i>
+                        </div>
+                    </div>
+                    <div id="password-match" class="strength-text" style="margin-top: 5px; display: none; color: var(--error);">
+                        <i class="fas fa-exclamation-circle"></i> Passwords do not match
+                    </div>
+                </div>
+                
+                <div class="terms">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+                </div>
+                
+                <button type="submit" class="submit-btn">
+                    <i class="fas fa-user-plus"></i> Create Secure Account
+                </button>
+                
+                <div class="social-login">
+                    <p>Or sign up with</p>
+                    <div class="social-icons">
+                        <div class="social-icon">
+                            <i class="fab fa-google"></i>
+                        </div>
+                        <div class="social-icon">
+                            <i class="fab fa-apple"></i>
+                        </div>
+                        <div class="social-icon">
+                            <i class="fab fa-microsoft"></i>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="auth-switch">
+                    Already have an account? <a href="login.html">Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script src="auth-script.js"></script>
+</body>
+</html>
