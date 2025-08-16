@@ -32,7 +32,7 @@
             color: var(--text);
             min-height: 100vh;
             display: flex;
-            overflow: hidden;
+            overflow-x: hidden;
             position: relative;
             padding: 20px;
         }
@@ -86,11 +86,13 @@
             background: rgba(15, 28, 46, 0.7);
             border: 1px solid var(--glass-border);
             min-height: 80vh;
+            flex-wrap: wrap;
         }
 
         /* Brand section */
         .brand-section {
             flex: 1;
+            min-width: 300px;
             background: linear-gradient(135deg, rgba(15, 28, 46, 0.8), rgba(31, 58, 95, 0.8));
             padding: 40px;
             display: flex;
@@ -200,7 +202,8 @@
 
         /* Auth section */
         .auth-section {
-            width: 40%;
+            flex: 1;
+            min-width: 400px;
             background: var(--glass);
             padding: 50px 40px;
             display: flex;
@@ -273,14 +276,15 @@
 
         .input-with-icon {
             position: relative;
+            display: flex;
+            align-items: center;
         }
 
         .input-with-icon i {
             position: absolute;
             left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
             color: var(--accent);
+            z-index: 2;
         }
 
         input {
@@ -300,12 +304,27 @@
             box-shadow: 0 0 0 3px rgba(77, 204, 189, 0.2);
         }
 
-        .password-toggle {
+        .password-toggle-container {
             position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
+            right: 0;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 15px;
+            background: rgba(31, 58, 95, 0.3);
+            border-left: 1px solid var(--glass-border);
+            border-radius: 0 10px 10px 0;
             cursor: pointer;
+            z-index: 1;
+            transition: background 0.3s ease;
+        }
+
+        .password-toggle-container:hover {
+            background: rgba(31, 58, 95, 0.5);
+        }
+
+        .password-toggle {
             color: var(--accent-light);
         }
 
@@ -569,6 +588,7 @@
             
             .brand-section, .auth-section {
                 width: 100%;
+                min-width: auto;
             }
             
             .brand-section {
@@ -585,7 +605,7 @@
             }
         }
 
-        @media (max-width: 576px) {
+        @media (max-width: 768px) {
             body {
                 padding: 10px;
             }
@@ -631,6 +651,52 @@
             .social-icon {
                 width: 45px;
                 height: 45px;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .brand-section, .auth-section {
+                padding: 20px 15px;
+            }
+            
+            .logo-icon {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .logo-icon i {
+                font-size: 20px;
+            }
+            
+            .logo-text {
+                font-size: 22px;
+            }
+            
+            .brand-tagline {
+                font-size: 18px;
+            }
+            
+            .auth-header h2 {
+                font-size: 22px;
+            }
+            
+            .auth-header p {
+                font-size: 14px;
+            }
+            
+            .submit-btn {
+                padding: 14px;
+                font-size: 15px;
+            }
+            
+            .social-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
             }
         }
     </style>
@@ -716,7 +782,9 @@
                     <div class="input-with-icon">
                         <i class="fas fa-lock"></i>
                         <input type="password" id="login-password" placeholder="••••••••" required>
-                        <i class="fas fa-eye password-toggle" id="login-eye"></i>
+                        <div class="password-toggle-container" id="login-toggle">
+                            <i class="fas fa-eye password-toggle"></i>
+                        </div>
                     </div>
                 </div>
                 
@@ -771,7 +839,9 @@
                     <div class="input-with-icon">
                         <i class="fas fa-lock"></i>
                         <input type="password" id="signup-password" placeholder="••••••••" required>
-                        <i class="fas fa-eye password-toggle" id="signup-eye"></i>
+                        <div class="password-toggle-container" id="signup-toggle">
+                            <i class="fas fa-eye password-toggle"></i>
+                        </div>
                     </div>
                     <div class="password-strength">
                         <div class="strength-meter">
@@ -786,7 +856,9 @@
                     <div class="input-with-icon">
                         <i class="fas fa-lock"></i>
                         <input type="password" id="signup-confirm" placeholder="••••••••" required>
-                        <i class="fas fa-eye password-toggle" id="confirm-eye"></i>
+                        <div class="password-toggle-container" id="confirm-toggle">
+                            <i class="fas fa-eye password-toggle"></i>
+                        </div>
                     </div>
                     <div id="password-match" class="strength-text" style="margin-top: 5px; display: none; color: var(--error);">
                         <i class="fas fa-exclamation-circle"></i> Passwords do not match
@@ -881,16 +953,22 @@
         });
         
         // Password toggle visibility
-        const passwordToggles = document.querySelectorAll('.password-toggle');
+        const passwordToggles = document.querySelectorAll('.password-toggle-container');
         
         passwordToggles.forEach(toggle => {
             toggle.addEventListener('click', () => {
-                const input = toggle.previousElementSibling;
-                const type = input.getAttribute('type') === 'password' ? 'text' : 'password';
-                input.setAttribute('type', type);
+                const icon = toggle.querySelector('i');
+                const input = toggle.parentElement.querySelector('input');
                 
-                toggle.classList.toggle('fa-eye');
-                toggle.classList.toggle('fa-eye-slash');
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
             });
         });
         
@@ -1024,12 +1102,6 @@
             } else {
                 showNotification('Please enter your email address first', 'error');
             }
-        });
-        
-        // Initialize password eye icons
-        document.querySelectorAll('.password-toggle').forEach(icon => {
-            icon.classList.add('fa-eye');
-            icon.classList.remove('fa-eye-slash');
         });
     </script>
 </body>
