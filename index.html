@@ -70,6 +70,9 @@
             overflow-x: hidden;
             position: relative;
             padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         /* Background elements */
@@ -208,11 +211,11 @@
         .page-container {
             display: none;
             width: 100%;
-            max-width: 1400px;
-            margin: 80px auto 40px;
+            max-width: 1200px;
             opacity: 0;
             transform: translateY(20px);
             transition: opacity 0.8s ease, transform 0.8s ease;
+            margin: 0 auto;
         }
 
         .page-container.active {
@@ -223,7 +226,7 @@
 
         /* Header */
         .header {
-            position: absolute;
+            position: fixed;
             top: 20px;
             right: 20px;
             display: flex;
@@ -287,6 +290,8 @@
             border: 1px solid var(--glass-border);
             min-height: 70vh;
             flex-wrap: wrap;
+            max-width: 1000px;
+            margin: 0 auto;
         }
 
         /* Brand section */
@@ -673,6 +678,8 @@
             color: white;
             font-size: 20px;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .light-theme .social-icon {
@@ -680,34 +687,40 @@
             color: #fff;
         }
 
-        /* Google brand color */
+        /* Google brand color with 3D effect */
         .social-icon.google {
-            background: #4285F4;
+            background: linear-gradient(135deg, #4285F4, #34A853, #FBBC05, #EA4335);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2), 
+                        inset 0 0 15px rgba(255,255,255,0.5);
         }
         
         .social-icon.google:hover {
-            background: #3b78e7;
-            transform: translateY(-3px);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
         }
 
-        /* Apple brand color */
+        /* Apple brand color with 3D effect */
         .social-icon.apple {
             background: #000;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2), 
+                        inset 0 0 15px rgba(255,255,255,0.2);
         }
         
         .social-icon.apple:hover {
-            background: #333;
-            transform: translateY(-3px);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
         }
 
-        /* Microsoft brand color */
+        /* Microsoft brand color with 3D effect */
         .social-icon.microsoft {
-            background: #0078D4;
+            background: linear-gradient(135deg, #7FBA00, #00A4EF, #FFB900, #F25022);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2), 
+                        inset 0 0 15px rgba(255,255,255,0.5);
         }
         
         .social-icon.microsoft:hover {
-            background: #0067b8;
-            transform: translateY(-3px);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
         }
 
         /* Password strength */
@@ -808,7 +821,7 @@
 
         /* Back button */
         .back-button {
-            position: absolute;
+            position: fixed;
             top: 20px;
             left: 20px;
             background: var(--glass);
@@ -864,7 +877,7 @@
         /* Responsive design */
         @media (max-width: 1200px) {
             .container {
-                max-width: 1000px;
+                max-width: 900px;
             }
             
             .brand-section {
@@ -878,7 +891,7 @@
 
         @media (max-width: 992px) {
             .page-container {
-                margin: 100px auto 40px;
+                margin: 0 auto;
             }
             
             .container {
@@ -911,7 +924,7 @@
             }
             
             .page-container {
-                margin: 80px auto 20px;
+                margin: 0 auto;
             }
             
             .container {
@@ -1334,7 +1347,7 @@
             setTimeout(() => {
                 splashScreen.style.display = 'none';
                 // Show landing page after splash screen
-                document.getElementById('landingPage').classList.add('active');
+                navigateTo(landingPage);
             }, 1000);
         }, 4000);
         
@@ -1345,6 +1358,9 @@
         const backButton = document.getElementById('backButton');
         const loginButton = document.getElementById('loginButton');
         const signupButton = document.getElementById('signupButton');
+        
+        // Track navigation history
+        let historyStack = ['landing'];
         
         function navigateTo(page) {
             // Hide all pages
@@ -1358,15 +1374,61 @@
             // Show/hide back button
             if (page !== landingPage) {
                 backButton.style.display = 'flex';
+                // Add to history
+                historyStack.push(page.id);
             } else {
                 backButton.style.display = 'none';
+                // Reset history
+                historyStack = ['landing'];
             }
         }
         
+        // Handle browser back button
+        window.addEventListener('popstate', function(event) {
+            if (historyStack.length > 1) {
+                historyStack.pop();
+                const prevPage = historyStack[historyStack.length - 1];
+                
+                if (prevPage === 'landing') {
+                    navigateTo(landingPage);
+                } else if (prevPage === 'loginPage') {
+                    navigateTo(loginPage);
+                } else if (prevPage === 'signupPage') {
+                    navigateTo(signupPage);
+                }
+            } else {
+                navigateTo(landingPage);
+            }
+        });
+        
         // Navigation event listeners
-        loginButton.addEventListener('click', () => navigateTo(loginPage));
-        signupButton.addEventListener('click', () => navigateTo(signupPage));
-        backButton.addEventListener('click', () => navigateTo(landingPage));
+        loginButton.addEventListener('click', () => {
+            navigateTo(loginPage);
+            history.pushState({page: 'loginPage'}, '', '#login');
+        });
+        
+        signupButton.addEventListener('click', () => {
+            navigateTo(signupPage);
+            history.pushState({page: 'signupPage'}, '', '#signup');
+        });
+        
+        backButton.addEventListener('click', () => {
+            if (historyStack.length > 1) {
+                historyStack.pop();
+                const prevPage = historyStack[historyStack.length - 1];
+                
+                if (prevPage === 'landing') {
+                    navigateTo(landingPage);
+                    history.pushState({page: 'landing'}, '', '#');
+                } else if (prevPage === 'loginPage') {
+                    navigateTo(loginPage);
+                } else if (prevPage === 'signupPage') {
+                    navigateTo(signupPage);
+                }
+            } else {
+                navigateTo(landingPage);
+            }
+        });
         
         // Password toggle visibility
         const passwordToggles = document.querySelectorAll('.password-toggle-container');
@@ -1500,6 +1562,7 @@
                 showNotification('Account created successfully! Welcome to FinGuard', 'success');
                 // Redirect to login page after successful signup
                 navigateTo(loginPage);
+                history.pushState({page: 'loginPage'}, '', '#login');
             }, 1000);
         });
         
