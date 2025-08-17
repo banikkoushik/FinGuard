@@ -680,6 +680,7 @@
             transition: all 0.3s ease;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
 
         .light-theme .social-icon {
@@ -687,7 +688,7 @@
             color: #fff;
         }
 
-        /* Google brand color with 3D effect */
+        /* Google 3D logo */
         .social-icon.google {
             background: linear-gradient(135deg, #4285F4, #34A853, #FBBC05, #EA4335);
             box-shadow: 0 4px 8px rgba(0,0,0,0.2), 
@@ -699,7 +700,7 @@
             box-shadow: 0 6px 12px rgba(0,0,0,0.3);
         }
 
-        /* Apple brand color with 3D effect */
+        /* Apple 3D logo */
         .social-icon.apple {
             background: #000;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2), 
@@ -711,7 +712,7 @@
             box-shadow: 0 6px 12px rgba(0,0,0,0.3);
         }
 
-        /* Microsoft brand color with 3D effect */
+        /* Microsoft 3D logo */
         .social-icon.microsoft {
             background: linear-gradient(135deg, #7FBA00, #00A4EF, #FFB900, #F25022);
             box-shadow: 0 4px 8px rgba(0,0,0,0.2), 
@@ -892,6 +893,7 @@
         @media (max-width: 992px) {
             .page-container {
                 margin: 0 auto;
+                padding: 0 20px;
             }
             
             .container {
@@ -976,6 +978,8 @@
                 top: 10px;
                 right: 10px;
                 gap: 10px;
+                flex-direction: column;
+                align-items: flex-end;
             }
             
             .theme-toggle {
@@ -987,6 +991,8 @@
             .auth-button {
                 padding: 10px 20px;
                 font-size: 14px;
+                width: 120px;
+                justify-content: center;
             }
             
             .brand-section, .auth-section {
@@ -1027,6 +1033,16 @@
                 width: 40px;
                 height: 40px;
                 font-size: 18px;
+            }
+            
+            .remember-forgot {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .forgot-password {
+                margin-left: 28px;
             }
         }
     </style>
@@ -1422,9 +1438,24 @@
                     history.pushState({page: 'landing'}, '', '#');
                 } else if (prevPage === 'loginPage') {
                     navigateTo(loginPage);
+                    history.pushState({page: 'loginPage'}, '', '#login');
                 } else if (prevPage === 'signupPage') {
                     navigateTo(signupPage);
+                    history.pushState({page: 'signupPage'}, '', '#signup');
                 }
+            } else {
+                navigateTo(landingPage);
+                history.pushState({page: 'landing'}, '', '#');
+            }
+        });
+        
+        // Initialize page based on URL hash
+        window.addEventListener('load', () => {
+            const hash = window.location.hash;
+            if (hash === '#login') {
+                navigateTo(loginPage);
+            } else if (hash === '#signup') {
+                navigateTo(signupPage);
             } else {
                 navigateTo(landingPage);
             }
