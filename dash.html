@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinGuard | Secure Financial Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* CSS Variables for Theming */
+        :root {
+            /* Dark Theme */
+            --primary-dark: #0f1c2e;
+            --secondary-dark: #1f3a5f;
+            --accent-dark: #4dccbd;
+            --accent-light-dark: #7de6da;
+            --accent-dark-dark: #3aa89b;
+            --text-dark: #f0f6fc;
+            --glass-dark: rgba(31, 58, 95, 0.5);
+            --glass-border-dark: rgba(109, 175, 219, 0.2);
+            --error: #ff6b6b;
+            
+            /* Light Theme - Enhanced for better contrast */
+            --primary-light: #f0f8ff;
+            --secondary-light: #e1f0ff;
+            --accent-light: #4dccbd;
+            --accent-light-light: #7de6da;
+            --accent-dark-light: #3aa89b;
+            --text-light: #1a2a3a;
+            --glass-light: rgba(225, 240, 255, 0.8);
+            --glass-border-light: rgba(109, 175, 219, 0.3);
+            --error-light: #e53e3e;
+            
+            /* Current Theme */
+            --primary: var(--primary-dark);
+            --secondary: var(--secondary-dark);
+            --accent: var(--accent-dark);
+            --accent-light: var(--accent-light-dark);
+            --accent-dark: var(--accent-dark-dark);
+            --text: var(--text-dark);
+            --glass: var(--glass-dark);
+            --glass-border: var(--glass-border-dark);
+            --background: linear-gradient(135deg, var(--primary), #0a1428);
+            --feature-bg: rgba(31, 58, 95, 0.3);
+            --error-color: var(--error);
+            
+            /* Mobile-specific variables */
+            --bottom-nav-height: 70px;
+            --top-bar-height: 60px;
+        }
+
+        .light-theme {
+            --primary: var(--primary-light);
+            --secondary: var(--secondary-light);
+            --accent: var(--accent-light);
+            --accent-light: var(--accent-light-light);
+            --accent-dark: var(--accent-dark-light);
+            --text: var(--text-light);
+            --glass: var(--glass-light);
+            --glass-border: var(--glass-border-light);
+            --background: linear-gradient(135deg, #f0f8ff, #e1f0ff);
+            --feature-bg: rgba(209, 231, 255, 0.7);
+            --error-color: var(--error-light);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: background-color 0.5s, color 0.5s, border-color 0.5s;
+        }
+
+        body {
+            font-family: 'Exo 2', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Mobile Top Bar */
+        .mobile-top-bar {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: var(--top-bar-height);
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--glass-border);
+            padding: 0 15px;
+            z-index: 1000;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mobile-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .mobile-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-logo-icon i {
+            font-size: 20px;
+            color: var(--primary);
+        }
+
+        .mobile-logo-text {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--accent-light), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .mobile-top-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .mobile-top-action {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            color: var(--text);
+            font-size: 18px;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: var(--bottom-nav-height);
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--glass-border);
+            z-index: 1000;
+        }
+
+        .nav-items {
+            display: flex;
+            height: 100%;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            height: 100%;
+            color: var(--text);
+            text-decoration: none;
+            opacity: 0.7;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item.active {
+            opacity: 1;
+            color: var(--accent);
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item span {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .nav-item.active i {
+            color: var(--accent);
+        }
+
+        /* Main content area */
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            padding-top: calc(var(--top-bar-height) + 20px);
+            padding-bottom: calc(var(--bottom-nav-height) + 20px);
+            width: 100%;
+            max-width: 100%;
+            overflow-y: auto;
+        }
+
+        /* Mobile Cards */
+        .mobile-card {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .card-action {
+            color: var(--accent);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        /* Balance Card */
+        .balance-amount {
+            font-size: 32px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .balance-change {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #2ecc71;
+        }
+
+        .balance-change i {
+            margin-right: 5px;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .quick-action {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .action-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            background: rgba(77, 204, 189, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+            color: var(--accent);
+            font-size: 20px;
+        }
+
+        .action-label {
+            font-size: 12px;
+            text-align: center;
+        }
+
+        /* Transactions */
+        .transaction-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            background: rgba(77, 204, 189, 0.2);
+            color: var(--accent);
+        }
+
+        .transaction-details {
+            flex: 1;
+        }
+
+        .transaction-name {
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .transaction-date {
+            font-size: 13px;
+            opacity: 0.7;
+        }
+
+        .transaction-amount {
+            font-weight: 600;
+        }
+
+        /* Budget Progress */
+        .budget-item {
+            margin-bottom: 15px;
+        }
+
+        .budget-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+        }
+
+        .budget-name {
+            font-weight: 600;
+        }
+
+        .budget-amount {
+            font-size: 14px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .light-theme .progress-bar {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+        }
+
+        .progress-fill.green {
+            background: linear-gradient(to right, #2ecc71, #27ae60);
+        }
+
+        .progress-fill.orange {
+            background: linear-gradient(to right, #f39c12, #e67e22);
+        }
+
+        .progress-fill.red {
+            background: linear-gradient(to right, #e74c3c, #c0392b);
+        }
+
+        /* Chat Assistant (Copilot Style) */
+        .assistant-chat {
+            position: fixed;
+            bottom: calc(var(--bottom-nav-height) + 20px);
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(to right, var(--accent), var(--accent-dark));
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 20px rgba(77, 204, 189, 0.4);
+            z-index: 900;
+            cursor: pointer;
+        }
+
+        /* Mobile Views */
+        .mobile-view {
+            display: none;
+        }
+
+        .mobile-view.active {
+            display: block;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            body {
+                padding: 0;
+            }
+
+            .mobile-top-bar {
+                display: flex;
+            }
+
+            .bottom-nav {
+                display: block;
+            }
+
+            .header {
+                display: none;
+            }
+
+            .back-button {
+                display: none !important;
+            }
+
+            .page-container {
+                display: none;
+                padding: 0;
+                max-width: 100%;
+            }
+
+            .page-container.active {
+                display: flex;
+                flex-direction: column;
+                height: 100vh;
+            }
+
+            .container {
+                flex-direction: column;
+                max-width: 100%;
+                border-radius: 0;
+                min-height: auto;
+                flex: 1;
+                overflow-y: auto;
+            }
+
+            .brand-section, .auth-section {
+                width: 100%;
+                min-width: auto;
+                padding: 20px;
+            }
+
+            .brand-section {
+                padding-top: 60px;
+            }
+
+            .auth-section {
+                padding-bottom: 80px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+
+            .auth-tabs {
+                flex-direction: column;
+            }
+
+            .auth-tab {
+                margin-bottom: 5px;
+            }
+
+            .logo-icon {
+                width: 50px;
+                height: 50px;
+            }
+
+            .logo-text {
+                font-size: 26px;
+            }
+
+            .brand-tagline {
+                font-size: 19px;
+            }
+
+            .auth-header h2 {
+                font-size: 24px;
+            }
+
+            .social-icon {
+                width: 45px;
+                height: 45px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .brand-section, .auth-section {
+                padding: 15px;
+            }
+
+            .brand-section {
+                padding-top: 60px;
+            }
+
+            .auth-section {
+                padding-bottom: 80px;
+            }
+
+            .logo-icon {
+                width: 40px;
+                height: 40px;
+            }
+
+            .logo-icon i {
+                font-size: 20px;
+            }
+
+            .logo-text {
+                font-size: 22px;
+            }
+
+            .brand-tagline {
+                font-size: 18px;
+            }
+
+            .auth-header h2 {
+                font-size: 22px;
+            }
+
+            .auth-header p {
+                font-size: 14px;
+            }
+
+            .submit-btn {
+                padding: 14px;
+                font-size: 15px;
+            }
+
+            .social-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 18px;
+            }
+
+            .remember-forgot {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .forgot-password {
+                margin-left: 28px;
+            }
+
+            .quick-actions {
+                grid-template-columns: repeat(4, 1fr);
+                gap: 10px;
+            }
+
+            .action-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 18px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Top Bar -->
+    <div class="mobile-top-bar">
+        <div class="mobile-logo">
+            <div class="mobile-logo-icon">
+                <i class="fas fa-shield-alt"></i>
+            </div>
+            <div class="mobile-logo-text">FinGuard</div>
+        </div>
+        <div class="mobile-top-actions">
+            <div class="mobile-top-action" id="mobileThemeToggle">
+                <i class="fas fa-moon"></i>
+            </div>
+            <div class="mobile-top-action">
+                <i class="fas fa-bell"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="nav-items">
+            <a href="#" class="nav-item active" data-view="dashboard">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="#" class="nav-item" data-view="transactions">
+                <i class="fas fa-exchange-alt"></i>
+                <span>Transactions</span>
+            </a>
+            <a href="#" class="nav-item" data-view="budget">
+                <i class="fas fa-chart-pie"></i>
+                <span>Budget</span>
+            </a>
+            <a href="#" class="nav-item" data-view="profile">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Assistant Chat Button -->
+    <div class="assistant-chat">
+        <i class="fas fa-robot"></i>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+        <!-- Dashboard View -->
+        <div class="mobile-view active" id="dashboard-view">
+            <div class="mobile-card">
+                <div class="card-header">
+                    <div class="card-title">Total Balance</div>
+                    <div class="card-action">View Report</div>
+                </div>
+                <div class="balance-amount">$42,568.75</div>
+                <div class="balance-change">
+                    <i class="fas fa-arrow-up"></i> 12.4% from last month
+                </div>
+            </div>
+
+            <div class="mobile-card">
+                <div class="card-header">
+                    <div class="card-title">Quick Actions</div>
+                </div>
+                <div class="quick-actions">
+                    <div class="quick-action">
+                        <div class="action-icon">
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <div class="action-label">Transfer</div>
+                    </div>
+                    <div class="quick-action">
+                        <div class="action-icon">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="action-label">Pay</div>
+                    </div>
+                    <div class="quick-action">
+                        <div class="action-icon">
+                            <i class="fas fa-piggy-bank"></i>
+                        </div>
+                        <div class="action-label">Save</div>
+                    </div>
+                    <div class="quick-action">
+                        <div class="action-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="action-label">Invest</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mobile-card">
+                <div class="card-header">
+                    <div class="card-title">Recent Transactions</div>
+                    <div class="card-action">View All</div>
+                </div>
+                <div class="transaction-list">
+                    <div class="transaction-item">
+                        <div class="transaction-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <div class="transaction-name">Amazon Purchase</div>
+                            <div class="transaction-date">Today, 10:30 AM</div>
+                        </div>
+                        <div class="transaction-amount">-$128.50</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div class="transaction-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <div class="transaction-name">Rent Payment</div>
+                            <div class="transaction-date">Yesterday, 9:00 AM</div>
+                        </div>
+                        <div class="transaction-amount">-$1,200.00</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div class="transaction-icon">
+                            <i class="fas fa-money-check"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <div class="transaction-name">Salary Deposit</div>
+                            <div class="transaction-date">May 1, 2023</div>
+                        </div>
+                        <div class="transaction-amount" style="color: var(--accent);">+$6,500.00</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mobile-card">
+                <div class="card-header">
+                    <div class="card-title">Monthly Budget</div>
+                    <div class="card-action">Edit</div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-header">
+                        <div class="budget-name">Groceries</div>
+                        <div class="budget-amount">$450 / $500</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill orange" style="width: 90%"></div>
+                    </div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-header">
+                        <div class="budget-name">Entertainment</div>
+                        <div class="budget-amount">$280 / $300</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill orange" style="width: 93%"></div>
+                    </div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-header">
+                        <div class="budget-name">Dining Out</div>
+                        <div class="budget-amount">$320 / $350</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill orange" style="width: 91%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transactions View -->
+        <div class="mobile-view" id="transactions-view">
+            <div class="mobile-card">
+                <div class="card-header">
+                    <div class="card-title">All Transactions</div>
+                    <div class="card-action">Filter</div>
+                </div>
+                <div class="transaction-list">
+                    <div class="transaction-item">
+                        <div class="transaction-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <div class="transaction-name">Amazon Purchase</div>
+                            <div class="transaction-date">Today, 10:30 AM</div>
+                        </div>
+                        <div class="transaction-amount">-$128.50</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div class="transaction-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <div class="transaction-name">Rent Payment</div>
+                            <div class="transaction-date">Yesterday, 9:00 AM</div>
+                        </div>
+                        <div class="transaction-amount">-$1,200.00</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div class="transaction-icon">
+                            <i class="fas fa-money-check"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <div class="transaction-name">Salary Deposit</div>
+                            <div class="transaction-date">May 1, 2023</div>
+                        </div>
+                        <div class="transaction-amount" style="color: var(--accent);">+$6,500.00</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div class="transaction-icon">
+                            <i class="fas fa-coffee"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <div class="transaction-name">Starbucks</div>
+                            <div class="transaction-date">Apr 28, 2023</div>
+                        </div>
+                        <div class="transaction-amount">-$5.75</div>
+                    </div>
+                    <div class="transaction-item">
+                        <div class="transaction-icon">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <div class="transaction-name">Birthday Gift</div>
+                            <div class="transaction-date">Apr 26, 2023</div>
+                        </div>
+                        <div class="transaction-amount" style="color: var(--accent);">+$100.00</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Budget View -->
+        <div class="mobile-view" id="budget-view">
+            <div class="mobile-card">
+                <div class="card-header">
+                    <div class="card-title">Budget Overview</div>
+                    <div class="card-action">Edit</div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-header">
+                        <div class="budget-name">Groceries</div>
+                        <div class="budget-amount">$450 / $500</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill orange" style="width: 90%"></div>
+                    </div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-header">
+                        <div class="budget-name">Entertainment</div>
+                        <div class="budget-amount">$280 / $300</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill orange" style="width: 93%"></div>
+                    </div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-header">
+                        <div class="budget-name">Dining Out</div>
+                        <div class="budget-amount">$320 / $350</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill orange" style="width: 91%"></div>
+                    </div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-header">
+                        <div class="budget-name">Shopping</div>
+                        <div class="budget-amount">$600 / $400</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill red" style="width: 150%"></div>
+                    </div>
+                </div>
+                <div class="budget-item">
+                    <div class="budget-header">
+                        <div class="budget-name">Transportation</div>
+                        <div class="budget-amount">$85 / $200</div>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill green" style="width: 42%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile View -->
+        <div class="mobile-view" id="profile-view">
+            <div class="mobile-card">
+                <div class="card-header">
+                    <div class="card-title">Account Settings</div>
+                </div>
+                <div class="menu-list">
+                    <div class="transaction-item">
+                        <div class="transaction-icon">
+                            <i class="fas fa-user"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <div class="transaction-name">Personal Information</div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="opacity: 0.5;"></i>
+                    </div>
+                    <div class="transaction-item">
+                        <div class="transaction-icon">
+                            <i class="fas fa-lock"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <div class="transaction-name">Security</div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="opacity: 0.5;"></i>
+                    </div>
+                    <div class="transaction-item">
+                        <div class="transaction-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <div class="transaction-name">Notifications</div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="opacity: 0.5;"></i>
+                    </div>
+                    <div class="transaction-item">
+                        <div class="transaction-icon">
+                            <i class="fas fa-moon"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <div class="transaction-name">Appearance</div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="opacity: 0.5;"></i>
+                    </div>
+                    <div class="transaction-item">
+                        <div class="transaction-icon">
+                            <i class="fas fa-sign-out-alt"></i>
+                        </div>
+                        <div class="transaction-details">
+                            <div class="transaction-name">Logout</div>
+                        </div>
+                        <i class="fas fa-chevron-right" style="opacity: 0.5;"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Mobile navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Update active nav item
+                document.querySelectorAll('.nav-item').forEach(navItem => {
+                    navItem.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // Show the corresponding view
+                const viewId = this.getAttribute('data-view') + '-view';
+                document.querySelectorAll('.mobile-view').forEach(view => {
+                    view.classList.remove('active');
+                });
+                document.getElementById(viewId).classList.add('active');
+            });
+        });
+
+        // Mobile theme toggle
+        document.getElementById('mobileThemeToggle').addEventListener('click', function() {
+            if (document.body.classList.contains('light-theme')) {
+                document.body.classList.remove('light-theme');
+                this.innerHTML = '<i class="fas fa-moon"></i>';
+            } else {
+                document.body.classList.add('light-theme');
+                this.innerHTML = '<i class="fas fa-sun"></i>';
+            }
+        });
+
+        // Assistant chat button
+        document.querySelector('.assistant-chat').addEventListener('click', function() {
+            alert('Financial assistant is ready to help you! Ask me anything about your finances.');
+        });
+    </script>
+</body>
+</html>
