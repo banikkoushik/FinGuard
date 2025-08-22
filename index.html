@@ -144,6 +144,61 @@
             border: 1px solid var(--glass-border);
             color: var(--text);
             font-size: 18px;
+            cursor: pointer;
+        }
+
+        /* Desktop Header */
+        .desktop-header {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+            z-index: 100;
+        }
+
+        .theme-toggle {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            font-size: 20px;
+        }
+
+        .theme-toggle:hover {
+            background: var(--accent);
+            color: var(--primary);
+            transform: rotate(15deg);
+        }
+
+        .auth-button {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 12px 25px;
+            color: var(--text);
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .auth-button:hover {
+            background: var(--accent);
+            color: var(--primary);
+            transform: translateY(-2px);
         }
 
         /* Background elements */
@@ -629,7 +684,7 @@
         .submit-btn {
             width: 100%;
             padding: 14px;
-            background: linear-gradient(to right, var(--accent), var(--accent-dark));
+            background: linear-gradient(to right, var(--accent), var(--accent-dark);
             border: none;
             border-radius: 8px;
             color: var(--primary);
@@ -943,6 +998,10 @@
                 display: none;
             }
             
+            .desktop-header {
+                display: flex;
+            }
+            
             .main-content {
                 padding: 30px;
                 padding-top: 30px;
@@ -978,6 +1037,7 @@
             
             .brand-description {
                 text-align: left;
+                font-size: 16px;
             }
             
             .features-title {
@@ -991,10 +1051,18 @@
             .security-indicator {
                 justify-content: flex-start;
             }
+            
+            .back-button {
+                top: 30px;
+                left: 30px;
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
         }
 
         @media (max-width: 767px) {
-            .header {
+            .desktop-header {
                 display: none;
             }
             
@@ -1148,6 +1216,19 @@
         </div>
     </div>
 
+    <!-- Desktop Header -->
+    <div class="desktop-header">
+        <button class="theme-toggle" id="themeToggle">
+            <i class="fas fa-moon"></i>
+        </button>
+        <button class="auth-button" id="loginButton">
+            <i class="fas fa-sign-in-alt"></i> Login
+        </button>
+        <button class="auth-button" id="signupButton">
+            <i class="fas fa-user-plus"></i> Sign Up
+        </button>
+    </div>
+
     <!-- Splash Screen -->
     <div id="splash-screen">
         <div class="logo-animation">
@@ -1172,19 +1253,6 @@
     <!-- Notification -->
     <div class="notification" id="notification"></div>
     
-    <!-- Header (for desktop) -->
-    <div class="header">
-        <button class="theme-toggle" id="themeToggle">
-            <i class="fas fa-moon"></i>
-        </button>
-        <button class="auth-button" id="loginButton">
-            <i class="fas fa-sign-in-alt"></i> Login
-        </button>
-        <button class="auth-button" id="signupButton">
-            <i class="fas fa-user-plus"></i> Sign Up
-        </button>
-    </div>
-    
     <!-- Mobile Auth Buttons -->
     <div class="auth-buttons-mobile">
         <button class="auth-button-mobile" id="mobileLoginButton">
@@ -1203,7 +1271,7 @@
     <!-- Main Content -->
     <div class="main-content">
         <!-- Page Containers -->
-        <div class="page-container" id="landingPage">
+        <div class="page-container active" id="landingPage">
             <!-- Main container -->
             <div class="container">
                 <!-- Brand section -->
@@ -1250,18 +1318,20 @@
                         <span>All data is encrypted end-to-end and never stored on our servers</span>
                     </div>
                 </div>
-            </div>
-        </div>
-        
-        <!-- Login Page -->
-        <div class="page-container" id="loginPage">
-            <div class="container">
+
+                <!-- Auth section -->
                 <div class="auth-section">
                     <div class="auth-header">
-                        <h2>Welcome Back to FinGuard</h2>
-                        <p>Secure your financial future with us</p>
+                        <h2>Get Started with FinGuard</h2>
+                        <p>Sign up or login to access your financial dashboard</p>
                     </div>
                     
+                    <div class="auth-tabs">
+                        <div class="auth-tab active" id="tab-login">Login</div>
+                        <div class="auth-tab" id="tab-signup">Sign Up</div>
+                    </div>
+                    
+                    <!-- Login Form -->
                     <form class="auth-form" id="login-form">
                         <div class="form-group">
                             <label for="login-email">Email</label>
@@ -1309,20 +1379,9 @@
                             </div>
                         </div>
                     </form>
-                </div>
-            </div>
-        </div>
-        
-        <!-- Signup Page -->
-        <div class="page-container" id="signupPage">
-            <div class="container">
-                <div class="auth-section">
-                    <div class="auth-header">
-                        <h2>Create Your FinGuard Account</h2>
-                        <p>Secure your financial future with us</p>
-                    </div>
                     
-                    <form class="auth-form" id="signup-form">
+                    <!-- Signup Form -->
+                    <form class="auth-form" id="signup-form" style="display: none;">
                         <div class="form-group">
                             <label for="signup-name">Full Name</label>
                             <div class="input-with-icon">
@@ -1359,7 +1418,7 @@
                         <div class="form-group">
                             <label for="signup-confirm">Confirm Password</label>
                             <div class="input-with-icon">
-                                <i class="fas fas fa-lock"></i>
+                                <i class="fas fa-lock"></i>
                                 <input type="password" id="signup-confirm" placeholder="••••••••" required>
                                 <div class="password-toggle-container" id="confirm-toggle">
                                     <i class="fas fa-eye password-toggle"></i>
@@ -1482,103 +1541,27 @@
             
             setTimeout(() => {
                 splashScreen.style.display = 'none';
-                // Show landing page after splash screen
-                navigateTo(landingPage);
             }, 1000);
         }, 4000);
         
-        // Page Navigation
-        const landingPage = document.getElementById('landingPage');
-        const loginPage = document.getElementById('loginPage');
-        const signupPage = document.getElementById('signupPage');
-        const backButton = document.getElementById('backButton');
-        const loginButton = document.getElementById('loginButton');
-        const signupButton = document.getElementById('signupButton');
-        const mobileLoginButton = document.getElementById('mobileLoginButton');
-        const mobileSignupButton = document.getElementById('mobileSignupButton');
+        // Auth tabs functionality
+        const loginTab = document.getElementById('tab-login');
+        const signupTab = document.getElementById('tab-signup');
+        const loginForm = document.getElementById('login-form');
+        const signupForm = document.getElementById('signup-form');
         
-        // Track navigation history
-        let historyStack = ['landing'];
-        
-        function navigateTo(page) {
-            // Hide all pages
-            document.querySelectorAll('.page-container').forEach(page => {
-                page.classList.remove('active');
-            });
-            
-            // Show the requested page
-            page.classList.add('active');
-            
-            // Show/hide back button
-            if (page !== landingPage) {
-                backButton.style.display = 'flex';
-                // Add to history
-                historyStack.push(page.id);
-            } else {
-                backButton.style.display = 'none';
-                // Reset history
-                historyStack = ['landing'];
-            }
-        }
-        
-        // Handle browser back button
-        window.addEventListener('popstate', function(event) {
-            if (historyStack.length > 1) {
-                historyStack.pop();
-                const prevPage = historyStack[historyStack.length - 1];
-                
-                if (prevPage === 'landing') {
-                    navigateTo(landingPage);
-                } else if (prevPage === 'loginPage') {
-                    navigateTo(loginPage);
-                } else if (prevPage === 'signupPage') {
-                    navigateTo(signupPage);
-                }
-            } else {
-                navigateTo(landingPage);
-            }
+        loginTab.addEventListener('click', () => {
+            loginTab.classList.add('active');
+            signupTab.classList.remove('active');
+            loginForm.style.display = 'block';
+            signupForm.style.display = 'none';
         });
         
-        // Navigation event listeners
-        loginButton.addEventListener('click', () => {
-            navigateTo(loginPage);
-            history.pushState({page: 'loginPage'}, '', '#login');
-        });
-        
-        signupButton.addEventListener('click', () => {
-            navigateTo(signupPage);
-            history.pushState({page: 'signupPage'}, '', '#signup');
-        });
-        
-        mobileLoginButton.addEventListener('click', () => {
-            navigateTo(loginPage);
-            history.pushState({page: 'loginPage'}, '', '#login');
-        });
-        
-        mobileSignupButton.addEventListener('click', () => {
-            navigateTo(signupPage);
-            history.pushState({page: 'signupPage'}, '', '#signup');
-        });
-        
-        backButton.addEventListener('click', () => {
-            if (historyStack.length > 1) {
-                historyStack.pop();
-                const prevPage = historyStack[historyStack.length - 1];
-                
-                if (prevPage === 'landing') {
-                    navigateTo(landingPage);
-                    history.pushState({page: 'landing'}, '', '#');
-                } else if (prevPage === 'loginPage') {
-                    navigateTo(loginPage);
-                    history.pushState({page: 'loginPage'}, '', '#login');
-                } else if (prevPage === 'signupPage') {
-                    navigateTo(signupPage);
-                    history.pushState({page: 'signupPage'}, '', '#signup');
-                }
-            } else {
-                navigateTo(landingPage);
-                history.pushState({page: 'landing'}, '', '#');
-            }
+        signupTab.addEventListener('click', () => {
+            signupTab.classList.add('active');
+            loginTab.classList.remove('active');
+            signupForm.style.display = 'block';
+            loginForm.style.display = 'none';
         });
         
         // Password toggle visibility
@@ -1615,7 +1598,7 @@
             if (password.length > 7) strength += 25;
             
             // Check for mixed case
-            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength += 25;
+            if (password.match(/ [a-z]/) && password.match(/[A-Z]/)) strength += 25;
             
             // Check for numbers
             if (password.match(/\d/)) strength += 25;
@@ -1672,9 +1655,6 @@
         }
         
         // Form submission
-        const loginForm = document.getElementById('login-form');
-        const signupForm = document.getElementById('signup-form');
-        
         loginForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const email = document.getElementById('login-email').value;
@@ -1685,7 +1665,9 @@
                 if (email.includes('@') && password.length > 5) {
                     showNotification('Login successful! Redirecting to dashboard...', 'success');
                     // Redirect to dashboard page
-                    window.location.href = 'dash.html';
+                    setTimeout(() => {
+                        window.location.href = 'dash.html';
+                    }, 1000);
                 } else {
                     showNotification('Invalid email or password. Please try again.', 'error');
                 }
@@ -1713,9 +1695,8 @@
             // Simulate signup process
             setTimeout(() => {
                 showNotification('Account created successfully! Welcome to FinGuard', 'success');
-                // Redirect to login page after successful signup
-                navigateTo(loginPage);
-                history.pushState({page: 'loginPage'}, '', '#login');
+                // Switch to login tab after successful signup
+                loginTab.click();
             }, 1000);
         });
         
@@ -1728,18 +1709,6 @@
                 showNotification(`Password reset instructions sent to ${email}`, 'success');
             } else {
                 showNotification('Please enter your email address first', 'error');
-            }
-        });
-        
-        // Initialize page based on URL hash
-        window.addEventListener('load', () => {
-            const hash = window.location.hash;
-            if (hash === '#login') {
-                navigateTo(loginPage);
-            } else if (hash === '#signup') {
-                navigateTo(signupPage);
-            } else {
-                navigateTo(landingPage);
             }
         });
     </script>
