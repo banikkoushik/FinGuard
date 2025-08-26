@@ -1,1432 +1,1461 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FinGuard | Secure Financial Management</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@300;400;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        /* CSS Variables for Theming */
-        :root {
-            /* Dark Theme */
-            --primary-dark: #0f1c2e;
-            --secondary-dark: #1f3a5f;
-            --accent-dark: #4dccbd;
-            --accent-light-dark: #7de6da;
-            --accent-dark-dark: #3aa89b;
-            --text-dark: #f0f6fc;
-            --glass-dark: rgba(31, 58, 95, 0.5);
-            --glass-border-dark: rgba(109, 175, 219, 0.2);
-            --error: #ff6b6b;
-            
-            /* Light Theme - Enhanced for better contrast */
-            --primary-light: #f0f8ff;
-            --secondary-light: #e1f0ff;
-            --accent-light: #4dccbd;
-            --accent-light-light: #7de6da;
-            --accent-dark-light: #3aa89b;
-            --text-light: #1a2a3a;
-            --glass-light: rgba(225, 240, 255, 0.8);
-            --glass-border-light: rgba(109, 175, 219, 0.3);
-            --error-light: #e53e3e;
-            
-            /* Current Theme */
-            --primary: var(--primary-dark);
-            --secondary: var(--secondary-dark);
-            --accent: var(--accent-dark);
-            --accent-light: var(--accent-light-dark);
-            --accent-dark: var(--accent-dark-dark);
-            --text: var(--text-dark);
-            --glass: var(--glass-dark);
-            --glass-border: var(--glass-border-dark);
-            --background: linear-gradient(135deg, var(--primary), #0a1428);
-            --feature-bg: rgba(31, 58, 95, 0.3);
-            --error-color: var(--error);
-        }
-
-        .light-theme {
-            --primary: var(--primary-light);
-            --secondary: var(--secondary-light);
-            --accent: var(--accent-light);
-            --accent-light: var(--accent-light-light);
-            --accent-dark: var(--accent-dark-light);
-            --text: var(--text-light);
-            --glass: var(--glass-light);
-            --glass-border: var(--glass-border-light);
-            --background: linear-gradient(135deg, #f0f8ff, #e1f0ff);
-            --feature-bg: rgba(209, 231, 255, 0.7);
-            --error-color: var(--error-light);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            transition: background-color 0.5s, color 0.5s, border-color 0.5s;
-        }
-
-        body {
-            font-family: 'Exo 2', sans-serif;
-            background: var(--background);
-            color: var(--text);
-            min-height: 100vh;
-            overflow-x: hidden;
-            position: relative;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* Background elements */
-        .background-elements {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: -1;
-        }
-
-        .particle {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(77, 204, 189, 0.15);
-            filter: blur(2px);
-            animation: float 15s infinite linear;
-        }
-
-        .grid-line {
-            position: absolute;
-            background: rgba(109, 175, 219, 0.05);
-        }
-
-        .grid-horizontal {
-            width: 100%;
-            height: 1px;
-            left: 0;
-        }
-
-        .grid-vertical {
-            height: 100%;
-            width: 1px;
-            top: 0;
-        }
-
-        /* Splash Screen */
-        #splash-screen {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(135deg, #0a1428, #0f1c2e);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            opacity: 1;
-            transition: opacity 1s ease, transform 1.5s ease;
-        }
-
-        .logo-animation {
-            width: 150px;
-            height: 150px;
-            position: relative;
-            perspective: 1000px;
-            margin-bottom: 30px;
-        }
-
-        .logo-3d {
-            width: 100%;
-            height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
-            animation: rotate 8s infinite linear;
-        }
-
-        .logo-face {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: rgba(77, 204, 189, 0.8);
-            border-radius: 20px;
-            backface-visibility: hidden;
-            box-shadow: 0 0 30px rgba(77, 204, 189, 0.6);
-        }
-
-        .logo-face i {
-            font-size: 70px;
-            color: #0f1c2e;
-        }
-
-        .logo-face.front {
-            transform: translateZ(75px);
-        }
-
-        .logo-face.back {
-            transform: rotateY(180deg) translateZ(75px);
-        }
-
-        .logo-face.right {
-            transform: rotateY(90deg) translateZ(75px);
-        }
-
-        .logo-face.left {
-            transform: rotateY(-90deg) translateZ(75px);
-        }
-
-        .logo-face.top {
-            transform: rotateX(90deg) translateZ(75px);
-        }
-
-        .logo-face.bottom {
-            transform: rotateX(-90deg) translateZ(75px);
-        }
-
-        .splash-text {
-            text-align: center;
-        }
-
-        .splash-text h1 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 42px;
-            margin-bottom: 20px;
-            background: linear-gradient(to right, #7de6da, #4dccbd);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            letter-spacing: 2px;
-        }
-
-        .splash-text p {
-            font-size: 18px;
-            opacity: 0.8;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-
-        /* Main container */
-        .container {
-            display: flex;
-            width: 100%;
-            max-width: 1200px;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--glass-border);
-            min-height: 70vh;
-            flex-wrap: wrap;
-            margin: 20px;
-        }
-
-        /* Brand section */
-        .brand-section {
-            flex: 1;
-            min-width: 300px;
-            background: linear-gradient(135deg, rgba(15, 28, 46, 0.8), rgba(31, 58, 95, 0.8));
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .light-theme .brand-section {
-            background: linear-gradient(135deg, rgba(240, 248, 255, 0.9), rgba(225, 240, 255, 0.9));
-        }
-
-        .brand-logo {
-            display: flex;
-            align-items: center;
-            margin-bottom: 40px;
-        }
-
-        .logo-icon {
-            width: 60px;
-            height: 60px;
-            background: var(--accent);
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            box-shadow: 0 0 20px rgba(77, 204, 189, 0.3);
-        }
-
-        .logo-icon i {
-            font-size: 28px;
-            color: var(--primary);
-        }
-
-        .logo-text {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 32px;
-            font-weight: 700;
-            letter-spacing: 1px;
-            background: linear-gradient(to right, var(--accent-light), var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .brand-tagline {
-            font-size: 22px;
-            margin-bottom: 20px;
-            line-height: 1.4;
-            max-width: 500px;
-        }
-
-        .brand-description {
-            font-size: 16px;
-            line-height: 1.7;
-            opacity: 0.8;
-            max-width: 500px;
-            margin-bottom: 40px;
-        }
-
-        .features-title {
-            font-size: 20px;
-            font-weight: 600;
-            margin-bottom: 20px;
-            color: var(--accent-light);
-            position: relative;
-            padding-left: 10px;
-        }
-
-        .features-title::before {
-            content: "";
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 4px;
-            height: 80%;
-            background: var(--accent);
-            border-radius: 2px;
-        }
-
-        .features {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            max-width: 500px;
-        }
-
-        .feature {
-            display: flex;
-            align-items: center;
-            padding: 12px 15px;
-            background: var(--feature-bg);
-            border-radius: 10px;
-            border: 1px solid var(--glass-border);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            cursor: default;
-        }
-
-        .feature:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(77, 204, 189, 0.2);
-        }
-
-        .feature i {
-            color: var(--accent);
-            margin-right: 10px;
-            font-size: 18px;
-        }
-
-        .security-indicator {
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
-            font-size: 12px;
-            opacity: 0.8;
-        }
-
-        .security-indicator i {
-            color: var(--accent);
-            margin-right: 5px;
-        }
-
-        /* Auth section */
-        .auth-section {
-            flex: 1;
-            min-width: 400px;
-            background: var(--glass);
-            padding: 50px 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            position: relative;
-        }
-
-        .auth-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-
-        .auth-header h2 {
-            font-family: 'Orbitron', sans-serif;
-            font-size: 28px;
-            font-weight: 500;
-            margin-bottom: 10px;
-            letter-spacing: 1px;
-        }
-
-        .auth-header p {
-            opacity: 0.7;
-            font-size: 16px;
-        }
-
-        .auth-tabs {
-            display: flex;
-            margin-bottom: 30px;
-            background: rgba(15, 28, 46, 0.5);
-            border-radius: 12px;
-            padding: 5px;
-        }
-
-        .light-theme .auth-tabs {
-            background: rgba(194, 214, 255, 0.5);
-        }
-
-        .auth-tab {
-            flex: 1;
-            text-align: center;
-            padding: 15px;
-            cursor: pointer;
-            border-radius: 10px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-
-        .auth-tab.active {
-            background: var(--accent);
-            color: var(--primary);
-        }
-
-        .auth-form {
-            animation: fadeIn 0.5s ease;
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-            position: relative;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 14px;
-            opacity: 0.8;
-        }
-
-        .input-with-icon {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        .input-with-icon i {
-            position: absolute;
-            left: 15px;
-            color: var(--accent);
-            z-index: 2;
-        }
-
-        input {
-            width: 100%;
-            padding: 15px 45px 15px 45px;
-            background: rgba(15, 28, 46, 0.5);
-            border: 1px solid var(--glass-border);
-            border-radius: 10px;
-            color: var(--text);
-            font-size: 16px;
-            transition: all 0.3s ease;
-        }
-
-        .light-theme input {
-            background: rgba(225, 240, 255, 0.7);
-            border: 1px solid rgba(109, 175, 219, 0.4);
-        }
-
-        input:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(77, 204, 189, 0.2);
-        }
-
-        .password-toggle-container {
-            position: absolute;
-            right: 0;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 15px;
-            background: rgba(31, 58, 95, 0.3);
-            border-left: 1px solid var(--glass-border);
-            border-radius: 0 10px 10px 0;
-            cursor: pointer;
-            z-index: 1;
-            transition: background 0.3s ease;
-        }
-
-        .light-theme .password-toggle-container {
-            background: rgba(194, 214, 255, 0.4);
-        }
-
-        .password-toggle-container:hover {
-            background: rgba(31, 58, 95, 0.5);
-        }
-
-        .light-theme .password-toggle-container:hover {
-            background: rgba(194, 214, 255, 0.6);
-        }
-
-        .password-toggle {
-            color: var(--accent-light);
-        }
-
-        .remember-forgot {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-        }
-
-        .remember {
-            display: flex;
-            align-items: center;
-        }
-
-        .remember input {
-            width: auto;
-            margin-right: 8px;
-        }
-
-        .forgot-password {
-            color: var(--accent-light);
-            text-decoration: none;
-            font-size: 14px;
-            transition: opacity 0.3s ease;
-        }
-
-        .forgot-password:hover {
-            opacity: 0.8;
-        }
-
-        .submit-btn {
-            width: 100%;
-            padding: 16px;
-            background: linear-gradient(to right, var(--accent), var(--accent-dark));
-            border: none;
-            border-radius: 10px;
-            color: var(--primary);
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(77, 204, 189, 0.3);
-            letter-spacing: 0.5px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .submit-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(77, 204, 189, 0.4);
-        }
-
-        .submit-btn:after {
-            content: "";
-            position: absolute;
-            top: -50%;
-            left: -60%;
-            width: 20px;
-            height: 200%;
-            background: rgba(255, 255, 255, 0.2);
-            transform: rotate(25deg);
-            transition: all 0.5s;
-        }
-
-        .submit-btn:hover:after {
-            left: 120%;
-        }
-
-        .social-login {
-            margin-top: 30px;
-        }
-
-        .social-login p {
-            text-align: center;
-            margin-bottom: 15px;
-            position: relative;
-            opacity: 0.7;
-        }
-
-        .social-login p:before,
-        .social-login p:after {
-            content: "";
-            position: absolute;
-            top: 50%;
-            width: 30%;
-            height: 1px;
-            background: var(--glass-border);
-        }
-
-        .social-login p:before {
-            left: 0;
-        }
-
-        .social-login p:after {
-            right: 0;
-        }
-
-        .social-icons {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-        }
-
-        .social-icon {
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: rgba(15, 28, 46, 0.5);
-            border: 1px solid var(--glass-border);
-            color: white;
-            font-size: 20px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-        }
-
-        .light-theme .social-icon {
-            background: rgba(225, 240, 255, 0.8);
-            color: #fff;
-        }
-
-        /* Google 3D logo */
-        .social-icon.google {
-            background: linear-gradient(135deg, #4285F4, #34A853, #FBBC05, #EA4335);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2), 
-                        inset 0 0 15px rgba(255,255,255,0.5);
-        }
-        
-        .social-icon.google:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-        }
-
-        /* Apple 3D logo */
-        .social-icon.apple {
-            background: #000;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2), 
-                        inset 0 0 15px rgba(255,255,255,0.2);
-        }
-        
-        .social-icon.apple:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-        }
-
-        /* Microsoft 3D logo */
-        .social-icon.microsoft {
-            background: linear-gradient(135deg, #7FBA00, #00A4EF, #FFB900, #F25022);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.2), 
-                        inset 0 0 15px rgba(255,255,255,0.5);
-        }
-        
-        .social-icon.microsoft:hover {
-            transform: translateY(-3px) scale(1.05);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
-        }
-
-        /* Password strength */
-        .password-strength {
-            margin-top: 10px;
-            display: flex;
-            align-items: center;
-        }
-
-        .strength-meter {
-            flex: 1;
-            height: 5px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            overflow: hidden;
-            margin-right: 10px;
-        }
-
-        .light-theme .strength-meter {
-            background: rgba(0, 0, 0, 0.1);
-        }
-
-        .strength-fill {
-            height: 100%;
-            width: 0%;
-            border-radius: 5px;
-            transition: width 0.3s ease, background 0.3s ease;
-        }
-
-        .strength-text {
-            font-size: 12px;
-            opacity: 0.7;
-        }
-
-        /* Notification */
-        .notification {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            padding: 15px 25px;
-            border-radius: 10px;
-            color: white;
-            font-weight: 500;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-            transform: translateX(120%);
-            transition: transform 0.3s ease;
-            z-index: 1000;
-        }
-
-        .notification.show {
-            transform: translateX(0);
-        }
-
-        .notification.success {
-            background: #2ecc71;
-        }
-
-        .notification.error {
-            background: #e74c3c;
-        }
-
-        /* Security indicators */
-        .security-indicator {
-            display: flex;
-            align-items: center;
-            margin-top: 10px;
-            font-size: 12px;
-            opacity: 0.8;
-        }
-
-        .security-indicator i {
-            color: var(--accent);
-            margin-right: 5px;
-        }
-
-        /* Terms and conditions */
-        .terms {
-            display: flex;
-            align-items: flex-start;
-            margin: 20px 0;
-        }
-
-        .terms input {
-            width: auto;
-            margin-top: 3px;
-            margin-right: 10px;
-        }
-
-        .terms label {
-            font-size: 13px;
-            opacity: 0.8;
-        }
-
-        .terms a {
-            color: var(--accent-light);
-            text-decoration: none;
-        }
-
-        /* Theme toggle */
-        .theme-toggle-container {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 100;
-        }
-
-        .theme-toggle {
-            background: var(--glass);
-            border: 1px solid var(--glass-border);
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--text);
-            cursor: pointer;
-            transition: all 0.3s ease;
-            backdrop-filter: blur(10px);
-            font-size: 20px;
-        }
-
-        .theme-toggle:hover {
-            background: var(--accent);
-            color: var(--primary);
-            transform: rotate(15deg);
-        }
-
-        /* Animations */
-        @keyframes float {
-            0% {
-                transform: translateY(0) translateX(0) rotate(0deg);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-1000px) translateX(1000px) rotate(720deg);
-                opacity: 0;
-            }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes rotate {
-            0% { transform: rotateX(0) rotateY(0) rotateZ(0); }
-            100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
-        }
-
-        /* Responsive design */
-        @media (max-width: 1200px) {
-            .container {
-                max-width: 900px;
-            }
-            
-            .brand-section {
-                padding: 30px;
-            }
-            
-            .auth-section {
-                padding: 40px 30px;
-            }
-        }
-
-        @media (max-width: 992px) {
-            body {
-                padding: 20px;
-            }
-            
-            .container {
-                flex-direction: column;
-                max-width: 700px;
-            }
-            
-            .brand-section, .auth-section {
-                width: 100%;
-                min-width: auto;
-            }
-            
-            .brand-section {
-                padding: 30px;
-            }
-            
-            .features {
-                grid-template-columns: 1fr;
-                max-width: 100%;
-            }
-            
-            .auth-section {
-                padding: 40px;
-            }
-        }
-
-        @media (max-width: 768px) {
-            body {
-                padding: 10px;
-            }
-            
-            .container {
-                margin: 0 auto;
-                border-radius: 15px;
-            }
-            
-            .brand-section, .auth-section {
-                padding: 25px;
-            }
-            
-            .auth-tabs {
-                flex-direction: column;
-            }
-            
-            .auth-tab {
-                margin-bottom: 5px;
-            }
-            
-            .brand-logo {
-                margin-bottom: 25px;
-            }
-            
-            .logo-icon {
-                width: 50px;
-                height: 50px;
-            }
-            
-            .logo-text {
-                font-size: 26px;
-            }
-            
-            .brand-tagline {
-                font-size: 19px;
-            }
-            
-            .auth-header h2 {
-                font-size: 24px;
-            }
-            
-            .social-icon {
-                width: 45px;
-                height: 45px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .brand-section, .auth-section {
-                padding: 20px 15px;
-            }
-            
-            .logo-icon {
-                width: 40px;
-                height: 40px;
-            }
-            
-            .logo-icon i {
-                font-size: 20px;
-            }
-            
-            .logo-text {
-                font-size: 22px;
-            }
-            
-            .brand-tagline {
-                font-size: 18px;
-            }
-            
-            .auth-header h2 {
-                font-size: 22px;
-            }
-            
-            .auth-header p {
-                font-size: 14px;
-            }
-            
-            .submit-btn {
-                padding: 14px;
-                font-size: 15px;
-            }
-            
-            .social-icon {
-                width: 40px;
-                height: 40px;
-                font-size: 18px;
-            }
-            
-            .remember-forgot {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-            
-            .forgot-password {
-                margin-left: 28px;
-            }
-            
-            .theme-toggle {
-                width: 40px;
-                height: 40px;
-                font-size: 18px;
-            }
-            
-            .theme-toggle-container {
-                top: 15px;
-                right: 15px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finora - Secure Financial Management</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Orbitron:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    /* CSS Variables for Theming */
+    :root {
+      /* Dark Theme */
+      --primary-dark: #0f1c2e;
+      --secondary-dark: #1f3a5f;
+      --accent-dark: #4dccbd;
+      --accent-light-dark: #7de6da;
+      --accent-dark-dark: #3aa89b;
+      --text-dark: #f0f6fc;
+      --glass-dark: rgba(31, 58, 95, 0.5);
+      --glass-border-dark: rgba(109, 175, 219, 0.2);
+      --error: #ff6b6b;
+      
+      /* Light Theme - Enhanced for better contrast */
+      --primary-light: #f0f8ff;
+      --secondary-light: #e1f0ff;
+      --accent-light: #4dccbd;
+      --accent-light-light: #7de6da;
+      --accent-dark-light: #3aa89b;
+      --text-light: #1a2a3a;
+      --glass-light: rgba(225, 240, 255, 0.8);
+      --glass-border-light: rgba(109, 175, 219, 0.3);
+      --error-light: #e53e3e;
+      
+      /* Current Theme */
+      --primary: var(--primary-dark);
+      --secondary: var(--secondary-dark);
+      --accent: var(--accent-dark);
+      --accent-light: var(--accent-light-dark);
+      --accent-dark: var(--accent-dark-dark);
+      --text: var(--text-dark);
+      --glass: var(--glass-dark);
+      --glass-border: var(--glass-border-dark);
+      --background: linear-gradient(135deg, var(--primary), #0a1428);
+      --feature-bg: rgba(31, 58, 95, 0.3);
+      --error-color: var(--error);
+    }
+
+    .light-theme {
+      --primary: var(--primary-light);
+      --secondary: var(--secondary-light);
+      --accent: var(--accent-light);
+      --accent-light: var(--accent-light-light);
+      --accent-dark: var(--accent-dark-light);
+      --text: var(--text-light);
+      --glass: var(--glass-light);
+      --glass-border: var(--glass-border-light);
+      --background: linear-gradient(135deg, #f0f8ff, #e1f0ff);
+      --feature-bg: rgba(209, 231, 255, 0.7);
+      --error-color: var(--error-light);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      transition: background-color 0.5s, color 0.5s, border-color 0.5s;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: var(--background);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    /* Background elements */
+    .background-elements {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    .particle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(77, 204, 189, 0.15);
+      filter: blur(2px);
+      animation: float 15s infinite linear;
+    }
+
+    .grid-line {
+      position: absolute;
+      background: rgba(109, 175, 219, 0.05);
+    }
+
+    .grid-horizontal {
+      width: 100%;
+      height: 1px;
+      left: 0;
+    }
+
+    .grid-vertical {
+      height: 100%;
+      width: 1px;
+      top: 0;
+    }
+
+    /* Enhanced Splash Screen */
+    #splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at top, #0f172a, #020617);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+      opacity: 1;
+      transition: opacity 1s ease, transform 1.5s ease;
+    }
+
+    .logo-animation {
+      width: 150px;
+      height: 150px;
+      position: relative;
+      perspective: 1000px;
+      margin-bottom: 30px;
+    }
+
+    .logo-3d {
+      width: 100%;
+      height: 100%;
+      position: relative;
+      transform-style: preserve-3d;
+      animation: rotate 8s infinite linear;
+    }
+
+    .logo-face {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #7b2ff7, #00f5ff);
+      border-radius: 20px;
+      backface-visibility: hidden;
+      box-shadow: 0 0 30px rgba(123, 47, 247, 0.6);
+    }
+
+    .logo-face i {
+      font-size: 70px;
+      color: white;
+    }
+
+    .logo-face.front {
+      transform: translateZ(75px);
+    }
+
+    .logo-face.back {
+      transform: rotateY(180deg) translateZ(75px);
+    }
+
+    .logo-face.right {
+      transform: rotateY(90deg) translateZ(75px);
+    }
+
+    .logo-face.left {
+      transform: rotateY(-90deg) translateZ(75px);
+    }
+
+    .logo-face.top {
+      transform: rotateX(90deg) translateZ(75px);
+    }
+
+    .logo-face.bottom {
+      transform: rotateX(-90deg) translateZ(75px);
+    }
+
+    .splash-text {
+      text-align: center;
+    }
+
+    .splash-text h1 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 42px;
+      margin-bottom: 20px;
+      background: linear-gradient(to right, #00f5ff, #7b2ff7, #00ff88);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 2px;
+    }
+
+    .splash-text p {
+      font-size: 18px;
+      opacity: 0.8;
+      max-width: 500px;
+      margin: 0 auto;
+      color: #7de6da;
+    }
+
+    .loading-bar {
+      width: 300px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 4px;
+      margin-top: 30px;
+      overflow: hidden;
+    }
+
+    .loading-progress {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(to right, #00f5ff, #7b2ff7);
+      border-radius: 4px;
+      transition: width 5s linear;
+    }
+
+    /* Main container */
+    .container {
+      display: flex;
+      width: 100%;
+      max-width: 1200px;
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+      backdrop-filter: blur(10px);
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--glass-border);
+      min-height: 70vh;
+      flex-wrap: wrap;
+      margin: 20px;
+    }
+
+    /* Brand section */
+    .brand-section {
+      flex: 1;
+      min-width: 300px;
+      background: linear-gradient(135deg, rgba(15, 28, 46, 0.8), rgba(31, 58, 95, 0.8));
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .light-theme .brand-section {
+      background: linear-gradient(135deg, rgba(240, 248, 255, 0.9), rgba(225, 240, 255, 0.9));
+    }
+
+    .brand-logo {
+      display: flex;
+      align-items: center;
+      margin-bottom: 40px;
+    }
+
+    .logo-icon {
+      width: 60px;
+      height: 60px;
+      background: var(--accent);
+      border-radius: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      box-shadow: 0 0 20px rgba(77, 204, 189, 0.3);
+    }
+
+    .logo-icon i {
+      font-size: 28px;
+      color: var(--primary);
+    }
+
+    .logo-text {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 32px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      background: linear-gradient(to right, var(--accent-light), var(--accent));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .brand-tagline {
+      font-size: 22px;
+      margin-bottom: 20px;
+      line-height: 1.4;
+      max-width: 500px;
+    }
+
+    .brand-description {
+      font-size: 16px;
+      line-height: 1.7;
+      opacity: 0.8;
+      max-width: 500px;
+      margin-bottom: 40px;
+    }
+
+    .features-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: var(--accent-light);
+      position: relative;
+      padding-left: 10px;
+    }
+
+    .features-title::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 4px;
+      height: 80%;
+      background: var(--accent);
+      border-radius: 2px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      max-width: 500px;
+    }
+
+    .feature {
+      display: flex;
+      align-items: center;
+      padding: 12px 15px;
+      background: var(--feature-bg);
+      border-radius: 10px;
+      border: 1px solid var(--glass-border);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      cursor: default;
+    }
+
+    .feature:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 5px 15px rgba(77, 204, 189, 0.2);
+    }
+
+    .feature i {
+      color: var(--accent);
+      margin-right: 10px;
+      font-size: 18px;
+    }
+
+    .security-indicator {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .security-indicator i {
+      color: var(--accent);
+      margin-right: 5px;
+    }
+
+    /* Auth section - Enhanced with better form styling */
+    .auth-section {
+      flex: 1;
+      min-width: 400px;
+      background: var(--glass);
+      padding: 50px 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      position: relative;
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .auth-header h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 28px;
+      font-weight: 500;
+      margin-bottom: 10px;
+      letter-spacing: 1px;
+    }
+
+    .auth-header p {
+      opacity: 0.7;
+      font-size: 16px;
+    }
+
+    .auth-tabs {
+      display: flex;
+      margin-bottom: 30px;
+      background: rgba(15, 28, 46, 0.5);
+      border-radius: 12px;
+      padding: 5px;
+    }
+
+    .light-theme .auth-tabs {
+      background: rgba(194, 214, 255, 0.5);
+    }
+
+    .auth-tab {
+      flex: 1;
+      text-align: center;
+      padding: 15px;
+      cursor: pointer;
+      border-radius: 10px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .auth-tab.active {
+      background: var(--accent);
+      color: var(--primary);
+    }
+
+    .auth-form {
+      animation: fadeIn 0.5s ease;
+    }
+
+    .form-group {
+      margin-bottom: 25px;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      opacity: 0.8;
+    }
+
+    .input-with-icon {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-with-icon i {
+      position: absolute;
+      left: 15px;
+      color: var(--accent);
+      z-index: 2;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px 45px 15px 45px;
+      background: rgba(15, 28, 46, 0.5);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      color: var(--text);
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .light-theme input {
+      background: rgba(225, 240, 255, 0.7);
+      border: 1px solid rgba(109, 175, 219, 0.4);
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(77, 204, 189, 0.2);
+    }
+
+    .password-toggle-container {
+      position: absolute;
+      right: 0;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 15px;
+      background: rgba(31, 58, 95, 0.3);
+      border-left: 1px solid var(--glass-border);
+      border-radius: 0 10px 10px 0;
+      cursor: pointer;
+      z-index: 1;
+      transition: background 0.3s ease;
+    }
+
+    .light-theme .password-toggle-container {
+      background: rgba(194, 214, 255, 0.4);
+    }
+
+    .password-toggle-container:hover {
+      background: rgba(31, 58, 95, 0.5);
+    }
+
+    .light-theme .password-toggle-container:hover {
+      background: rgba(194, 214, 255, 0.6);
+    }
+
+    .password-toggle {
+      color: var(--accent-light);
+    }
+
+    .remember-forgot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+    }
+
+    .remember {
+      display: flex;
+      align-items: center;
+    }
+
+    .remember input {
+      width: auto;
+      margin-right: 8px;
+    }
+
+    .forgot-password {
+      color: var(--accent-light);
+      text-decoration: none;
+      font-size: 14px;
+      transition: opacity 0.3s ease;
+    }
+
+    .forgot-password:hover {
+      opacity: 0.8;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(to right, var(--accent), var(--accent-dark));
+      border: none;
+      border-radius: 10px;
+      color: var(--primary);
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(77, 204, 189, 0.3);
+      letter-spacing: 0.5px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(77, 204, 189, 0.4);
+    }
+
+    .submit-btn:after {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -60%;
+      width: 20px;
+      height: 200%;
+      background: rgba(255, 255, 255, 0.2);
+      transform: rotate(25deg);
+      transition: all 0.5s;
+    }
+
+    .submit-btn:hover:after {
+      left: 120%;
+    }
+
+    .social-login {
+      margin-top: 30px;
+    }
+
+    .social-login p {
+      text-align: center;
+      margin-bottom: 15px;
+      position: relative;
+      opacity: 0.7;
+    }
+
+    .social-login p:before,
+    .social-login p:after {
+      content: "";
+      position: absolute;
+      top: 50%;
+      width: 30%;
+      height: 1px;
+      background: var(--glass-border);
+    }
+
+    .social-login p:before {
+      left: 0;
+    }
+
+    .social-login p:after {
+      right: 0;
+    }
+
+    .social-icons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+    }
+
+    .social-icon {
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(15, 28, 46, 0.5);
+      border: 1px solid var(--glass-border);
+      color: white;
+      font-size: 20px;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    .light-theme .social-icon {
+      background: rgba(225, 240, 255, 0.8);
+      color: #fff;
+    }
+
+    /* Google 3D logo */
+    .social-icon.google {
+      background: linear-gradient(135deg, #4285F4, #34A853, #FBBC05, #EA4335);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2), 
+                  inset 0 0 15px rgba(255,255,255,0.5);
+    }
+    
+    .social-icon.google:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+
+    /* Apple 3D logo */
+    .social-icon.apple {
+      background: #000;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2), 
+                  inset 0 0 15px rgba(255,255,255,0.2);
+    }
+    
+    .social-icon.apple:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+
+    /* Microsoft 3D logo */
+    .social-icon.microsoft {
+      background: linear-gradient(135deg, #7FBA00, #00A4EF, #FFB900, #F25022);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2), 
+                  inset 0 0 15px rgba(255,255,255,0.5);
+    }
+    
+    .social-icon.microsoft:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+    }
+
+    /* Password strength */
+    .password-strength {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    .strength-meter {
+      flex: 1;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 5px;
+      overflow: hidden;
+      margin-right: 10px;
+    }
+
+    .light-theme .strength-meter {
+      background: rgba(0, 0, 0, 0.1);
+    }
+
+    .strength-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 5px;
+      transition: width 0.3s ease, background 0.3s ease;
+    }
+
+    .strength-text {
+      font-size: 12px;
+      opacity: 0.7;
+    }
+
+    /* Notification */
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px 25px;
+      border-radius: 10px;
+      color: white;
+      font-weight: 500;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      transform: translateX(120%);
+      transition: transform 0.3s ease;
+      z-index: 1000;
+    }
+
+    .notification.show {
+      transform: translateX(0);
+    }
+
+    .notification.success {
+      background: #2ecc71;
+    }
+
+    .notification.error {
+      background: #e74c3c;
+    }
+
+    /* Security indicators */
+    .security-indicator {
+      display: flex;
+      align-items: center;
+      margin-top: 10px;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+
+    .security-indicator i {
+      color: var(--accent);
+      margin-right: 5px;
+    }
+
+    /* Terms and conditions */
+    .terms {
+      display: flex;
+      align-items: flex-start;
+      margin: 20px 0;
+    }
+
+    .terms input {
+      width: auto;
+      margin-top: 3px;
+      margin-right: 10px;
+    }
+
+    .terms label {
+      font-size: 13px;
+      opacity: 0.8;
+    }
+
+    .terms a {
+      color: var(--accent-light);
+      text-decoration: none;
+    }
+
+    /* Theme toggle */
+    .theme-toggle-container {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 100;
+    }
+
+    .theme-toggle {
+      background: var(--glass);
+      border: 1px solid var(--glass-border);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      font-size: 20px;
+    }
+
+    .theme-toggle:hover {
+      background: var(--accent);
+      color: var(--primary);
+      transform: rotate(15deg);
+    }
+
+    /* Animations */
+    @keyframes float {
+      0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-1000px) translateX(1000px) rotate(720deg);
+        opacity: 0;
+      }
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes rotate {
+      0% { transform: rotateX(0) rotateY(0) rotateZ(0); }
+      100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+    }
+
+    /* Responsive design */
+    @media (max-width: 1200px) {
+      .container {
+        max-width: 900px;
+      }
+      
+      .brand-section {
+        padding: 30px;
+      }
+      
+      .auth-section {
+        padding: 40px 30px;
+      }
+    }
+
+    @media (max-width: 992px) {
+      body {
+        padding: 20px;
+      }
+      
+      .container {
+        flex-direction: column;
+        max-width: 700px;
+      }
+      
+      .brand-section, .auth-section {
+        width: 100%;
+        min-width: auto;
+      }
+      
+      .brand-section {
+        padding: 30px;
+      }
+      
+      .features {
+        grid-template-columns: 1fr;
+        max-width: 100%;
+      }
+      
+      .auth-section {
+        padding: 40px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+      
+      .container {
+        margin: 0 auto;
+        border-radius: 15px;
+      }
+      
+      .brand-section, .auth-section {
+        padding: 25px;
+      }
+      
+      .auth-tabs {
+        flex-direction: column;
+      }
+      
+      .auth-tab {
+        margin-bottom: 5px;
+      }
+      
+      .brand-logo {
+        margin-bottom: 25px;
+      }
+      
+      .logo-icon {
+        width: 50px;
+        height: 50px;
+      }
+      
+      .logo-text {
+        font-size: 26px;
+      }
+      
+      .brand-tagline {
+        font-size: 19px;
+      }
+      
+      .auth-header h2 {
+        font-size: 24px;
+      }
+      
+      .social-icon {
+        width: 45px;
+        height: 45px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .brand-section, .auth-section {
+        padding: 20px 15px;
+      }
+      
+      .logo-icon {
+        width: 40px;
+        height: 40px;
+      }
+      
+      .logo-icon i {
+        font-size: 20px;
+      }
+      
+      .logo-text {
+        font-size: 22px;
+      }
+      
+      .brand-tagline {
+        font-size: 18px;
+      }
+      
+      .auth-header h2 {
+        font-size: 22px;
+      }
+      
+      .auth-header p {
+        font-size: 14px;
+      }
+      
+      .submit-btn {
+        padding: 14px;
+        font-size: 15px;
+      }
+      
+      .social-icon {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+      }
+      
+      .remember-forgot {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+      }
+      
+      .forgot-password {
+        margin-left: 28px;
+      }
+      
+      .theme-toggle {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+      }
+      
+      .theme-toggle-container {
+        top: 15px;
+        right: 15px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <!-- Splash Screen -->
-    <div id="splash-screen">
-        <div class="logo-animation">
-            <div class="logo-3d">
-                <div class="logo-face front"><i class="fas fa-shield-alt"></i></div>
-                <div class="logo-face back"><i class="fas fa-shield-alt"></i></div>
-                <div class="logo-face right"><i class="fas fa-shield-alt"></i></div>
-                <div class="logo-face left"><i class="fas fa-shield-alt"></i></div>
-                <div class="logo-face top"><i class="fas fa-shield-alt"></i></div>
-                <div class="logo-face bottom"><i class="fas fa-shield-alt"></i></div>
-            </div>
-        </div>
-        <div class="splash-text">
-            <h1>FinGuard</h1>
-            <p>Securing your financial future with cutting-edge technology</p>
-        </div>
+  <!-- Enhanced Splash Screen with proper branding -->
+  <div id="splash-screen">
+    <div class="logo-animation">
+      <div class="logo-3d">
+        <div class="logo-face front"><i class="fas fa-coins"></i></div>
+        <div class="logo-face back"><i class="fas fa-coins"></i></div>
+        <div class="logo-face right"><i class="fas fa-coins"></i></div>
+        <div class="logo-face left"><i class="fas fa-coins"></i></div>
+        <div class="logo-face top"><i class="fas fa-coins"></i></div>
+        <div class="logo-face bottom"><i class="fas fa-coins"></i></div>
+      </div>
     </div>
-    
-    <!-- Background elements -->
-    <div class="background-elements" id="background"></div>
-    
-    <!-- Notification -->
-    <div class="notification" id="notification"></div>
-    
-    <!-- Theme Toggle -->
-    <div class="theme-toggle-container">
-        <button class="theme-toggle" id="themeToggle">
-            <i class="fas fa-moon"></i>
+    <div class="splash-text">
+      <h1>Finora</h1>
+      <p>Securing your financial future with cutting-edge technology</p>
+    </div>
+    <div class="loading-bar">
+      <div class="loading-progress" id="loading-progress"></div>
+    </div>
+  </div>
+  
+  <!-- Background elements -->
+  <div class="background-elements" id="background"></div>
+  
+  <!-- Notification -->
+  <div class="notification" id="notification"></div>
+  
+  <!-- Theme Toggle -->
+  <div class="theme-toggle-container">
+    <button class="theme-toggle" id="themeToggle">
+      <i class="fas fa-moon"></i>
+    </button>
+  </div>
+  
+  <!-- Main container -->
+  <div class="container">
+    <!-- Brand section -->
+    <div class="brand-section">
+      <div class="brand-logo">
+        <div class="logo-icon">
+          <i class="fas fa-coins"></i>
+        </div>
+        <div class="logo-text">Finora</div>
+      </div>
+      <h1 class="brand-tagline">The Future of Financial Security & Wealth Management</h1>
+      <p class="brand-description">Finora combines cutting-edge technology with intuitive design to safeguard your financial future. Experience banking reimagined with military-grade security and AI-powered insights.</p>
+      
+      <h3 class="features-title">Why Choose Finora?</h3>
+      <div class="features">
+        <div class="feature">
+          <i class="fas fa-fingerprint"></i>
+          <span>Biometric Authentication</span>
+        </div>
+        <div class="feature">
+          <i class="fas fa-robot"></i>
+          <span>AI Financial Assistant</span>
+        </div>
+        <div class="feature">
+          <i class="fas fa-lock"></i>
+          <span>Bank-Level Encryption</span>
+        </div>
+        <div class="feature">
+          <i class="fas fa-chart-line"></i>
+          <span>Real-time Analytics</span>
+        </div>
+        <div class="feature">
+          <i class="fas fa-money-bill-wave"></i>
+          <span>Automated Savings</span>
+        </div>
+        <div class="feature">
+          <i class="fas fa-shield-virus"></i>
+          <span>Fraud Detection</span>
+        </div>
+      </div>
+      
+      <div class="security-indicator">
+        <i class="fas fa-shield-alt"></i>
+        <span>All data is encrypted end-to-end and never stored on our servers</span>
+      </div>
+    </div>
+
+    <!-- Auth section -->
+    <div class="auth-section">
+      <div class="auth-header">
+        <h2>Get Started with Finora</h2>
+        <p>Sign up or login to access your financial dashboard</p>
+      </div>
+      
+      <div class="auth-tabs">
+        <div class="auth-tab active" id="login-tab">Login</div>
+        <div class="auth-tab" id="signup-tab">Sign Up</div>
+      </div>
+      
+      <!-- Login Form -->
+      <form class="auth-form" id="login-form">
+        <div class="form-group">
+          <label for="login-email">Email</label>
+          <div class="input-with-icon">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="login-email" placeholder="your.email@example.com" required>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <div class="input-with-icon">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="login-password" placeholder="••••••••" required>
+            <div class="password-toggle-container" id="login-toggle">
+              <i class="fas fa-eye password-toggle"></i>
+            </div>
+          </div>
+        </div>
+        
+        <div class="remember-forgot">
+          <div class="remember">
+            <input type="checkbox" id="remember">
+            <label for="remember">Remember me</label>
+          </div>
+          <a href="#" class="forgot-password">Forgot password?</a>
+        </div>
+        
+        <button type="submit" class="submit-btn">
+          <i class="fas fa-lock"></i> Login to Dashboard
         </button>
+        
+        <div class="social-login">
+          <p>Or continue with</p>
+          <div class="social-icons">
+            <div class="social-icon google">
+              <i class="fab fa-google"></i>
+            </div>
+            <div class="social-icon apple">
+              <i class="fab fa-apple"></i>
+            </div>
+            <div class="social-icon microsoft">
+              <i class="fab fa-microsoft"></i>
+            </div>
+          </div>
+        </div>
+      </form>
+      
+      <!-- Signup Form -->
+      <form class="auth-form" id="signup-form" style="display: none;">
+        <div class="form-group">
+          <label for="signup-name">Full Name</label>
+          <div class="input-with-icon">
+            <i class="fas fa-user"></i>
+            <input type="text" id="signup-name" placeholder="John Doe" required>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="signup-email">Email</label>
+          <div class="input-with-icon">
+            <i class="fas fa-envelope"></i>
+            <input type="email" id="signup-email" placeholder="your.email@example.com" required>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="signup-password">Password</label>
+          <div class="input-with-icon">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="signup-password" placeholder="••••••••" required>
+            <div class="password-toggle-container" id="signup-toggle">
+              <i class="fas fa-eye password-toggle"></i>
+            </div>
+          </div>
+          <div class="password-strength">
+            <div class="strength-meter">
+              <div class="strength-fill" id="password-strength-fill"></div>
+            </div>
+            <div class="strength-text" id="password-strength-text">Weak</div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="signup-confirm">Confirm Password</label>
+          <div class="input-with-icon">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="signup-confirm" placeholder="••••••••" required>
+            <div class="password-toggle-container" id="confirm-toggle">
+              <i class="fas fa-eye password-toggle"></i>
+            </div>
+          </div>
+          <div id="password-match" class="strength-text" style="margin-top: 5px; display: none; color: var(--error-color);">
+            <i class="fas fa-exclamation-circle"></i> Passwords do not match
+          </div>
+        </div>
+        
+        <div class="terms">
+          <input type="checkbox" id="terms" required>
+          <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
+        </div>
+        
+        <button type="submit" class="submit-btn">
+          <i class="fas fa-user-plus"></i> Create Secure Account
+        </button>
+        
+        <div class="social-login">
+          <p>Or sign up with</p>
+          <div class="social-icons">
+            <div class="social-icon google">
+              <i class="fab fa-google"></i>
+            </div>
+            <div class="social-icon apple">
+              <i class="fab fa-apple"></i>
+            </div>
+            <div class="social-icon microsoft">
+              <i class="fab fa-microsoft"></i>
+            </div>
+          </div>
+        </div>
+      </form>
     </div>
+  </div>
+
+  <script>
+    // Create background particles
+    const background = document.getElementById('background');
+    const particleCount = 30;
     
-    <!-- Main container -->
-    <div class="container">
-        <!-- Brand section -->
-        <div class="brand-section">
-            <div class="brand-logo">
-                <div class="logo-icon">
-                    <i class="fas fa-shield-alt"></i>
-                </div>
-                <div class="logo-text">FinGuard</div>
-            </div>
-            <h1 class="brand-tagline">The Future of Financial Security & Wealth Management</h1>
-            <p class="brand-description">FinGuard combines cutting-edge technology with intuitive design to safeguard your financial future. Experience banking reimagined with military-grade security and AI-powered insights.</p>
-            
-            <h3 class="features-title">Why Choose FinGuard?</h3>
-            <div class="features">
-                <div class="feature">
-                    <i class="fas fa-fingerprint"></i>
-                    <span>Biometric Authentication</span>
-                </div>
-                <div class="feature">
-                    <i class="fas fa-robot"></i>
-                    <span>AI Financial Assistant</span>
-                </div>
-                <div class="feature">
-                    <i class="fas fa-lock"></i>
-                    <span>Bank-Level Encryption</span>
-                </div>
-                <div class="feature">
-                    <i class="fas fa-chart-line"></i>
-                    <span>Real-time Analytics</span>
-                </div>
-                <div class="feature">
-                    <i class="fas fa-money-bill-wave"></i>
-                    <span>Automated Savings</span>
-                </div>
-                <div class="feature">
-                    <i class="fas fa-shield-virus"></i>
-                    <span>Fraud Detection</span>
-                </div>
-            </div>
-            
-            <div class="security-indicator">
-                <i class="fas fa-shield-alt"></i>
-                <span>All data is encrypted end-to-end and never stored on our servers</span>
-            </div>
-        </div>
-
-        <!-- Auth section -->
-        <div class="auth-section">
-            <div class="auth-header">
-                <h2>Get Started with FinGuard</h2>
-                <p>Sign up or login to access your financial dashboard</p>
-            </div>
-            
-            <div class="auth-tabs">
-                <div class="auth-tab active" id="login-tab">Login</div>
-                <div class="auth-tab" id="signup-tab">Sign Up</div>
-            </div>
-            
-            <!-- Login Form -->
-            <form class="auth-form" id="login-form">
-                <div class="form-group">
-                    <label for="login-email">Email</label>
-                    <div class="input-with-icon">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" id="login-email" placeholder="your.email@example.com" required>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="login-password">Password</label>
-                    <div class="input-with-icon">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="login-password" placeholder="••••••••" required>
-                        <div class="password-toggle-container" id="login-toggle">
-                            <i class="fas fa-eye password-toggle"></i>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="remember-forgot">
-                    <div class="remember">
-                        <input type="checkbox" id="remember">
-                        <label for="remember">Remember me</label>
-                    </div>
-                    <a href="#" class="forgot-password">Forgot password?</a>
-                </div>
-                
-                <button type="submit" class="submit-btn">
-                    <i class="fas fa-lock"></i> Login to Dashboard
-                </button>
-                
-                <div class="social-login">
-                    <p>Or continue with</p>
-                    <div class="social-icons">
-                        <div class="social-icon google">
-                            <i class="fab fa-google"></i>
-                        </div>
-                        <div class="social-icon apple">
-                            <i class="fab fa-apple"></i>
-                        </div>
-                        <div class="social-icon microsoft">
-                            <i class="fab fa-microsoft"></i>
-                        </div>
-                    </div>
-                </div>
-            </form>
-            
-            <!-- Signup Form -->
-            <form class="auth-form" id="signup-form" style="display: none;">
-                <div class="form-group">
-                    <label for="signup-name">Full Name</label>
-                    <div class="input-with-icon">
-                        <i class="fas fa-user"></i>
-                        <input type="text" id="signup-name" placeholder="John Doe" required>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="signup-email">Email</label>
-                    <div class="input-with-icon">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" id="signup-email" placeholder="your.email@example.com" required>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="signup-password">Password</label>
-                    <div class="input-with-icon">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="signup-password" placeholder="••••••••" required>
-                        <div class="password-toggle-container" id="signup-toggle">
-                            <i class="fas fa-eye password-toggle"></i>
-                        </div>
-                    </div>
-                    <div class="password-strength">
-                        <div class="strength-meter">
-                            <div class="strength-fill" id="password-strength-fill"></div>
-                        </div>
-                        <div class="strength-text" id="password-strength-text">Weak</div>
-                    </div>
-                </div>
-                
-                <div class="form-group">
-                    <label for="signup-confirm">Confirm Password</label>
-                    <div class="input-with-icon">
-                        <i class="fas fa-lock"></i>
-                        <input type="password" id="signup-confirm" placeholder="••••••••" required>
-                        <div class="password-toggle-container" id="confirm-toggle">
-                            <i class="fas fa-eye password-toggle"></i>
-                        </div>
-                    </div>
-                    <div id="password-match" class="strength-text" style="margin-top: 5px; display: none; color: var(--error-color);">
-                        <i class="fas fa-exclamation-circle"></i> Passwords do not match
-                    </div>
-                </div>
-                
-                <div class="terms">
-                    <input type="checkbox" id="terms" required>
-                    <label for="terms">I agree to the <a href="#">Terms of Service</a> and <a href="#">Privacy Policy</a></label>
-                </div>
-                
-                <button type="submit" class="submit-btn">
-                    <i class="fas fa-user-plus"></i> Create Secure Account
-                </button>
-                
-                <div class="social-login">
-                    <p>Or sign up with</p>
-                    <div class="social-icons">
-                        <div class="social-icon google">
-                            <i class="fab fa-google"></i>
-                        </div>
-                        <div class="social-icon apple">
-                            <i class="fab fa-apple"></i>
-                        </div>
-                        <div class="social-icon microsoft">
-                            <i class="fab fa-microsoft"></i>
-                        </div>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        // Create background particles
-        const background = document.getElementById('background');
-        const particleCount = 30;
+    for (let i = 0; i < particleCount; i++) {
+      const particle = document.createElement('div');
+      particle.classList.add('particle');
+      
+      // Random size and position
+      const size = Math.random() * 100 + 20;
+      const posX = Math.random() * 100;
+      const posY = Math.random() * 100;
+      
+      particle.style.width = `${size}px`;
+      particle.style.height = `${size}px`;
+      particle.style.left = `${posX}%`;
+      particle.style.top = `${posY}%`;
+      
+      // Random animation duration
+      particle.style.animationDuration = `${Math.random() * 30 + 15}s`;
+      
+      background.appendChild(particle);
+    }
+    
+    // Create grid lines
+    for (let i = 0; i < 20; i++) {
+      const horizontalLine = document.createElement('div');
+      horizontalLine.classList.add('grid-line', 'grid-horizontal');
+      horizontalLine.style.top = `${(i + 1) * 5}%`;
+      background.appendChild(horizontalLine);
+      
+      const verticalLine = document.createElement('div');
+      verticalLine.classList.add('grid-line', 'grid-vertical');
+      verticalLine.style.left = `${(i + 1) * 5}%`;
+      background.appendChild(verticalLine);
+    }
+    
+    // Theme toggle
+    const themeToggle = document.getElementById('themeToggle');
+    const themeIcon = themeToggle.querySelector('i');
+    
+    function setTheme(theme) {
+      document.body.className = theme;
+      localStorage.setItem('theme', theme);
+      
+      if (theme === 'light-theme') {
+        themeIcon.className = 'fas fa-sun';
+      } else {
+        themeIcon.className = 'fas fa-moon';
+      }
+    }
+    
+    themeToggle.addEventListener('click', () => {
+      if (document.body.classList.contains('light-theme')) {
+        setTheme('');
+      } else {
+        setTheme('light-theme');
+      }
+    });
+    
+    // Check saved theme
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      setTheme(savedTheme);
+    }
+    
+    // Enhanced splash screen animation
+    const splashScreen = document.getElementById('splash-screen');
+    const loadingProgress = document.getElementById('loading-progress');
+    
+    // Start loading animation
+    setTimeout(() => {
+      loadingProgress.style.width = '100%';
+    }, 100);
+    
+    // Auto-hide splash screen after 4 seconds
+    setTimeout(() => {
+      splashScreen.style.opacity = '0';
+      splashScreen.style.pointerEvents = 'none';
+      splashScreen.style.transform = 'scale(1.1)';
+      
+      setTimeout(() => {
+        splashScreen.style.display = 'none';
+      }, 1000);
+    }, 4000);
+    
+    // Auth tabs functionality
+    const loginTab = document.getElementById('login-tab');
+    const signupTab = document.getElementById('signup-tab');
+    const loginForm = document.getElementById('login-form');
+    const signupForm = document.getElementById('signup-form');
+    
+    loginTab.addEventListener('click', () => {
+      loginTab.classList.add('active');
+      signupTab.classList.remove('active');
+      loginForm.style.display = 'block';
+      signupForm.style.display = 'none';
+    });
+    
+    signupTab.addEventListener('click', () => {
+      signupTab.classList.add('active');
+      loginTab.classList.remove('active');
+      signupForm.style.display = 'block';
+      loginForm.style.display = 'none';
+    });
+    
+    // Password toggle visibility
+    const passwordToggles = document.querySelectorAll('.password-toggle-container');
+    
+    passwordToggles.forEach(toggle => {
+      toggle.addEventListener('click', () => {
+        const icon = toggle.querySelector('i');
+        const input = toggle.parentElement.querySelector('input');
         
-        for (let i = 0; i < particleCount; i++) {
-            const particle = document.createElement('div');
-            particle.classList.add('particle');
-            
-            // Random size and position
-            const size = Math.random() * 100 + 20;
-            const posX = Math.random() * 100;
-            const posY = Math.random() * 100;
-            
-            particle.style.width = `${size}px`;
-            particle.style.height = `${size}px`;
-            particle.style.left = `${posX}%`;
-            particle.style.top = `${posY}%`;
-            
-            // Random animation duration
-            particle.style.animationDuration = `${Math.random() * 30 + 15}s`;
-            
-            background.appendChild(particle);
+        if (input.type === 'password') {
+          input.type = 'text';
+          icon.classList.remove('fa-eye');
+          icon.classList.add('fa-eye-slash');
+        } else {
+          input.type = 'password';
+          icon.classList.remove('fa-eye-slash');
+          icon.classList.add('fa-eye');
         }
-        
-        // Create grid lines
-        for (let i = 0; i < 20; i++) {
-            const horizontalLine = document.createElement('div');
-            horizontalLine.classList.add('grid-line', 'grid-horizontal');
-            horizontalLine.style.top = `${(i + 1) * 5}%`;
-            background.appendChild(horizontalLine);
-            
-            const verticalLine = document.createElement('div');
-            verticalLine.classList.add('grid-line', 'grid-vertical');
-            verticalLine.style.left = `${(i + 1) * 5}%`;
-            background.appendChild(verticalLine);
+      });
+    });
+    
+    // Password strength indicator
+    const passwordInput = document.getElementById('signup-password');
+    const confirmInput = document.getElementById('signup-confirm');
+    const strengthFill = document.getElementById('password-strength-fill');
+    const strengthText = document.getElementById('password-strength-text');
+    const passwordMatch = document.getElementById('password-match');
+    
+    function checkPasswordStrength(password) {
+      let strength = 0;
+      
+      // Check password length
+      if (password.length > 7) strength += 25;
+      
+      // Check for mixed case
+      if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength += 25;
+      
+      // Check for numbers
+      if (password.match(/\d/)) strength += 25;
+      
+      // Check for special characters
+      if (password.match(/[^a-zA-Z0-9]/)) strength += 25;
+      
+      // Update UI
+      strengthFill.style.width = `${strength}%`;
+      
+      if (strength < 50) {
+        strengthFill.style.background = '#e74c3c';
+        strengthText.textContent = 'Weak';
+      } else if (strength < 75) {
+        strengthFill.style.background = '#f39c12';
+        strengthText.textContent = 'Medium';
+      } else {
+        strengthFill.style.background = '#2ecc71';
+        strengthText.textContent = 'Strong';
+      }
+    }
+    
+    function checkPasswordMatch() {
+      if (passwordInput.value && confirmInput.value) {
+        if (passwordInput.value !== confirmInput.value) {
+          passwordMatch.style.display = 'block';
+          return false;
+        } else {
+          passwordMatch.style.display = 'none';
+          return true;
         }
-        
-        // Theme toggle
-        const themeToggle = document.getElementById('themeToggle');
-        const themeIcon = themeToggle.querySelector('i');
-        
-        function setTheme(theme) {
-            document.body.className = theme;
-            localStorage.setItem('theme', theme);
-            
-            if (theme === 'light-theme') {
-                themeIcon.className = 'fas fa-sun';
-            } else {
-                themeIcon.className = 'fas fa-moon';
-            }
+      }
+      return true;
+    }
+    
+    passwordInput.addEventListener('input', () => {
+      checkPasswordStrength(passwordInput.value);
+      checkPasswordMatch();
+    });
+    
+    confirmInput.addEventListener('input', () => {
+      checkPasswordMatch();
+    });
+    
+    // Notification system
+    function showNotification(message, type) {
+      const notification = document.getElementById('notification');
+      notification.textContent = message;
+      notification.className = `notification ${type} show`;
+      
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 3000);
+    }
+    
+    // Form submission
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      const password = document.getElementById('login-password').value;
+      
+      // Simulate login process
+      setTimeout(() => {
+        if (email.includes('@') && password.length > 5) {
+          showNotification('Login successful! Redirecting to dashboard...', 'success');
+          // Redirect to dashboard page
+          setTimeout(() => {
+            window.location.href = 'dash.html';
+          }, 1000);
+        } else {
+          showNotification('Invalid email or password. Please try again.', 'error');
         }
-        
-        themeToggle.addEventListener('click', () => {
-            if (document.body.classList.contains('light-theme')) {
-                setTheme('');
-            } else {
-                setTheme('light-theme');
-            }
-        });
-        
-        // Check saved theme
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme) {
-            setTheme(savedTheme);
-        }
-        
-        // Splash screen animation
-        const splashScreen = document.getElementById('splash-screen');
-        setTimeout(() => {
-            splashScreen.style.opacity = '0';
-            splashScreen.style.pointerEvents = 'none';
-            splashScreen.style.transform = 'scale(1.2)';
-            
-            setTimeout(() => {
-                splashScreen.style.display = 'none';
-            }, 1000);
-        }, 4000);
-        
-        // Auth tabs functionality
-        const loginTab = document.getElementById('login-tab');
-        const signupTab = document.getElementById('signup-tab');
-        const loginForm = document.getElementById('login-form');
-        const signupForm = document.getElementById('signup-form');
-        
-        loginTab.addEventListener('click', () => {
-            loginTab.classList.add('active');
-            signupTab.classList.remove('active');
-            loginForm.style.display = 'block';
-            signupForm.style.display = 'none';
-        });
-        
-        signupTab.addEventListener('click', () => {
-            signupTab.classList.add('active');
-            loginTab.classList.remove('active');
-            signupForm.style.display = 'block';
-            loginForm.style.display = 'none';
-        });
-        
-        // Password toggle visibility
-        const passwordToggles = document.querySelectorAll('.password-toggle-container');
-        
-        passwordToggles.forEach(toggle => {
-            toggle.addEventListener('click', () => {
-                const icon = toggle.querySelector('i');
-                const input = toggle.parentElement.querySelector('input');
-                
-                if (input.type === 'password') {
-                    input.type = 'text';
-                    icon.classList.remove('fa-eye');
-                    icon.classList.add('fa-eye-slash');
-                } else {
-                    input.type = 'password';
-                    icon.classList.remove('fa-eye-slash');
-                    icon.classList.add('fa-eye');
-                }
-            });
-        });
-        
-        // Password strength indicator
-        const passwordInput = document.getElementById('signup-password');
-        const confirmInput = document.getElementById('signup-confirm');
-        const strengthFill = document.getElementById('password-strength-fill');
-        const strengthText = document.getElementById('password-strength-text');
-        const passwordMatch = document.getElementById('password-match');
-        
-        function checkPasswordStrength(password) {
-            let strength = 0;
-            
-            // Check password length
-            if (password.length > 7) strength += 25;
-            
-            // Check for mixed case
-            if (password.match(/[a-z]/) && password.match(/ [A-Z]/)) strength += 25;
-            
-            // Check for numbers
-            if (password.match(/\d/)) strength += 25;
-            
-            // Check for special characters
-            if (password.match(/[^a-zA-Z0-9]/)) strength += 25;
-            
-            // Update UI
-            strengthFill.style.width = `${strength}%`;
-            
-            if (strength < 50) {
-                strengthFill.style.background = '#e74c3c';
-                strengthText.textContent = 'Weak';
-            } else if (strength < 75) {
-                strengthFill.style.background = '#f39c12';
-                strengthText.textContent = 'Medium';
-            } else {
-                strengthFill.style.background = '#2ecc71';
-                strengthText.textContent = 'Strong';
-            }
-        }
-        
-        function checkPasswordMatch() {
-            if (passwordInput.value && confirmInput.value) {
-                if (passwordInput.value !== confirmInput.value) {
-                    passwordMatch.style.display = 'block';
-                    return false;
-                } else {
-                    passwordMatch.style.display = 'none';
-                    return true;
-                }
-            }
-            return true;
-        }
-        
-        passwordInput.addEventListener('input', () => {
-            checkPasswordStrength(passwordInput.value);
-            checkPasswordMatch();
-        });
-        
-        confirmInput.addEventListener('input', () => {
-            checkPasswordMatch();
-        });
-        
-        // Notification system
-        function showNotification(message, type) {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.className = `notification ${type} show`;
-            
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
-        }
-        
-        // Form submission
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            const password = document.getElementById('login-password').value;
-            
-            // Simulate login process
-            setTimeout(() => {
-                if (email.includes('@') && password.length > 5) {
-                    showNotification('Login successful! Redirecting to dashboard...', 'success');
-                    // Redirect to dashboard page
-                    setTimeout(() => {
-                        window.location.href = 'dash.html';
-                    }, 1000);
-                } else {
-                    showNotification('Invalid email or password. Please try again.', 'error');
-                }
-            }, 1000);
-        });
-        
-        signupForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const name = document.getElementById('signup-name').value;
-            const email = document.getElementById('signup-email').value;
-            const password = document.getElementById('signup-password').value;
-            const confirmPassword = document.getElementById('signup-confirm').value;
-            
-            // Validate password match
-            if (!checkPasswordMatch()) {
-                showNotification('Passwords do not match', 'error');
-                return;
-            }
-            
-            if (password.length < 8) {
-                showNotification('Password must be at least 8 characters', 'error');
-                return;
-            }
-            
-            // Simulate signup process
-            setTimeout(() => {
-                showNotification('Account created successfully! Welcome to FinGuard', 'success');
-                // Switch to login tab after successful signup
-                loginTab.click();
-            }, 1000);
-        });
-        
-        // Forgot password functionality
-        document.querySelector('.forgot-password').addEventListener('click', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('login-email').value;
-            
-            if (email) {
-                showNotification(`Password reset instructions sent to ${email}`, 'success');
-            } else {
-                showNotification('Please enter your email address first', 'error');
-            }
-        });
-    </script>
+      }, 1000);
+    });
+    
+    signupForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('signup-name').value;
+      const email = document.getElementById('signup-email').value;
+      const password = document.getElementById('signup-password').value;
+      const confirmPassword = document.getElementById('signup-confirm').value;
+      
+      // Validate password match
+      if (!checkPasswordMatch()) {
+        showNotification('Passwords do not match', 'error');
+        return;
+      }
+      
+      if (password.length < 8) {
+        showNotification('Password must be at least 8 characters', 'error');
+        return;
+      }
+      
+      // Simulate signup process
+      setTimeout(() => {
+        showNotification('Account created successfully! Welcome to Finora', 'success');
+        // Switch to login tab after successful signup
+        loginTab.click();
+      }, 1000);
+    });
+    
+    // Forgot password functionality
+    document.querySelector('.forgot-password').addEventListener('click', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value;
+      
+      if (email) {
+        showNotification(`Password reset instructions sent to ${email}`, 'success');
+      } else {
+        showNotification('Please enter your email address first', 'error');
+      }
+    });
+  </script>
 </body>
 </html>
