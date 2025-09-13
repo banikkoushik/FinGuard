@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finora - Secure Login</title>
+    <title>Mavrick - Your Rebel Guide to Smart Money</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -11,9 +11,12 @@
             --primary: #1a2a6c;
             --secondary: #b21f1f;
             --accent: #fdbb2d;
+            --rebel-red: #d62246;
+            --rebel-purple: #4a1c6f;
+            --rebel-blue: #1a2a6c;
             --text: #2c3e50;
             --text-light: #7f8c8d;
-            --background: linear-gradient(135deg, #1a2a6c 0%, #b21f1f 50%, #fdbb2d 100%);
+            --background: linear-gradient(135deg, var(--rebel-blue) 0%, var(--rebel-purple) 50%, var(--rebel-red) 100%);
             --card-bg: #ffffff;
             --shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
             --glass: rgba(255, 255, 255, 0.1);
@@ -55,13 +58,14 @@
         .logo-icon {
             width: 80px;
             height: 80px;
-            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            background: linear-gradient(135deg, var(--rebel-red), var(--rebel-purple));
             border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-right: 15px;
-            box-shadow: 0 10px 20px rgba(0, 114, 255, 0.3);
+            box-shadow: 0 10px 20px rgba(214, 34, 70, 0.3);
+            transform: rotate(-5deg);
         }
 
         .logo-icon i {
@@ -71,15 +75,22 @@
 
         .logo-text {
             font-size: 42px;
-            font-weight: 700;
+            font-weight: 800;
             letter-spacing: -1px;
+            background: linear-gradient(to right, #fdbb2d, #d62246);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
         }
 
         .tagline {
             font-size: 24px;
-            font-weight: 600;
+            font-weight: 700;
             margin-bottom: 20px;
             line-height: 1.4;
+            color: #fdbb2d;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
         }
 
         .description {
@@ -111,17 +122,18 @@
         .feature:hover {
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            background: rgba(214, 34, 70, 0.2);
         }
 
         .feature i {
-            color: #00c6ff;
+            color: #fdbb2d;
             margin-right: 10px;
             font-size: 20px;
         }
 
         .get-started-btn {
             padding: 18px 40px;
-            background: linear-gradient(135deg, #00c6ff, #0072ff);
+            background: linear-gradient(135deg, var(--rebel-red), var(--rebel-purple));
             border: none;
             border-radius: 12px;
             color: white;
@@ -129,14 +141,14 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(0, 198, 255, 0.3);
+            box-shadow: 0 4px 15px rgba(214, 34, 70, 0.3);
             position: relative;
             overflow: hidden;
         }
 
         .get-started-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 198, 255, 0.4);
+            box-shadow: 0 6px 20px rgba(214, 34, 70, 0.4);
         }
 
         .get-started-btn:after {
@@ -191,6 +203,7 @@
             position: relative;
             max-height: 90vh;
             overflow-y: auto;
+            border: 2px solid var(--rebel-red);
         }
 
         .auth-container.active .auth-section {
@@ -204,13 +217,13 @@
             background: none;
             border: none;
             font-size: 24px;
-            color: var(--text-light);
+            color: var(--rebel-red);
             cursor: pointer;
             transition: color 0.3s ease;
         }
 
         .close-btn:hover {
-            color: var(--primary);
+            color: var(--rebel-purple);
         }
 
         .auth-header {
@@ -222,7 +235,7 @@
             font-size: 28px;
             font-weight: 600;
             margin-bottom: 10px;
-            color: var(--primary);
+            color: var(--rebel-red);
         }
 
         .auth-header p {
@@ -252,7 +265,7 @@
 
         .auth-tab.active {
             background: white;
-            color: var(--primary);
+            color: var(--rebel-red);
             box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
         }
 
@@ -282,7 +295,7 @@
         .input-with-icon i {
             position: absolute;
             left: 15px;
-            color: var(--primary);
+            color: var(--rebel-red);
             z-index: 2;
         }
 
@@ -299,8 +312,8 @@
 
         input:focus {
             outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(26, 42, 108, 0.1);
+            border-color: var(--rebel-red);
+            box-shadow: 0 0 0 3px rgba(214, 34, 70, 0.1);
         }
 
         .password-toggle-container {
@@ -324,7 +337,7 @@
         }
 
         .password-toggle {
-            color: var(--primary);
+            color: var(--rebel-red);
         }
 
         .password-strength {
@@ -398,7 +411,7 @@
         }
 
         .forgot-password {
-            color: var(--primary);
+            color: var(--rebel-red);
             text-decoration: none;
             transition: opacity 0.3s ease;
         }
@@ -410,7 +423,7 @@
         .submit-btn {
             width: 100%;
             padding: 16px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: linear-gradient(135deg, var(--rebel-red), var(--rebel-purple));
             border: none;
             border-radius: 10px;
             color: white;
@@ -418,12 +431,12 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(26, 42, 108, 0.3);
+            box-shadow: 0 4px 15px rgba(214, 34, 70, 0.3);
         }
 
         .submit-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(26, 42, 108, 0.4);
+            box-shadow: 0 6px 20px rgba(214, 34, 70, 0.4);
         }
 
         .submit-btn:disabled {
@@ -490,6 +503,8 @@
         .social-icon:hover {
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background: linear-gradient(135deg, var(--rebel-red), var(--rebel-purple));
+            color: white;
         }
 
         /* Animations */
@@ -502,6 +517,12 @@
                 opacity: 1;
                 transform: translateY(0);
             }
+        }
+
+        @keyframes rebelPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
         /* Particles background */
@@ -591,12 +612,12 @@
     <div class="welcome-screen" id="welcome-screen">
         <div class="logo">
             <div class="logo-icon">
-                <i class="fas fa-coins"></i>
+                <i class="fas fa-rocket"></i>
             </div>
-            <div class="logo-text">Finora</div>
+            <div class="logo-text">Mavrick</div>
         </div>
-        <h1 class="tagline">Modern Financial Management for the Digital Age</h1>
-        <p class="description">Finora combines cutting-edge technology with intuitive design to revolutionize how you manage your finances. Experience the future of banking today.</p>
+        <h1 class="tagline">Your rebel guide to smart money</h1>
+        <p class="description">Mavrick blends cutting-edge technology with intuitive design to simplify and elevate financial management. It empowers you with clarity, control, and confidence to shape a secure and intelligent financial future</p>
         
         <div class="features">
             <div class="feature">
@@ -607,10 +628,14 @@
                 <i class="fas fa-chart-line"></i>
                 <span>Smart Analytics</span>
             </div>
+            <div class="feature">
+                <i class="fas fa-bolt"></i>
+                <span>No Nonsense Approach</span>
+            </div>
         </div>
         
         <button class="get-started-btn" id="get-started-btn">
-            Get Started
+            Join the Rebellion
         </button>
     </div>
 
@@ -621,7 +646,7 @@
                 <i class="fas fa-times"></i>
             </button>
             <div class="auth-header">
-                <h2>Welcome to Finora</h2>
+                <h2>Welcome to Mavrick</h2>
                 <p>Sign in or create an account to get started</p>
             </div>
             
@@ -660,7 +685,7 @@
                 </div>
                 
                 <button type="submit" class="submit-btn">
-                    <i class="fas fa-lock"></i> Login to Dashboard
+                    <i class="fas fa-lock"></i> Access Your Dashboard
                 </button>
                 
                 <div class="social-login">
@@ -751,7 +776,7 @@
                 </div>
                 
                 <button type="submit" class="submit-btn" id="signup-submit" disabled>
-                    <i class="fas fa-user-plus"></i> Create Account
+                    <i class="fas fa-user-plus"></i> Join the Rebellion
                 </button>
                 
                 <div class="social-login">
@@ -1021,7 +1046,7 @@
             
             // Simulate signup process
             setTimeout(() => {
-                alert('Account created successfully! Welcome to Finora');
+                alert('Account created successfully! Welcome to Mavrick');
                 // Switch to login tab after successful signup
                 loginTab.click();
             }, 1000);
