@@ -7,10 +7,13 @@ import sqlite3
 import uuid
 import smtplib
 import os
+import atexit
+import time
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from functools import wraps
-from threading import Lock
+from threading import Lock, Thread
+from apscheduler.schedulers.background import BackgroundScheduler
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -35,37 +38,41 @@ def get_db():
     return conn
 
 def init_db():
-    with db_lock:
-        conn = get_db()
-        c = conn.cursor()
-        
-        # Create users table
-        c.execute('''CREATE TABLE IF NOT EXISTS users
-                    (id TEXT PRIMARY KEY, 
-                     name TEXT NOT NULL, 
-                     email TEXT UNIQUE NOT NULL, 
-                     password TEXT NOT NULL,
-                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
-        
-        # Create password_reset_tokens table
-        c.execute('''CREATE TABLE IF NOT EXISTS password_reset_tokens
-                    (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                     email TEXT NOT NULL,
-                     token TEXT NOT NULL,
-                     expires_at TIMESTAMP NOT NULL,
-                     used INTEGER DEFAULT 0)''')
-        
-        # Create sessions table for tracking active users
-        c.execute('''CREATE TABLE IF NOT EXISTS sessions
-                    (id INTEGER PRIMARY KEY AUTOINCREMENT,
-                     user_id TEXT NOT NULL,
-                     token TEXT NOT NULL,
-                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                     expires_at TIMESTAMP NOT NULL,
-                     FOREIGN KEY (user_id) REFERENCES users (id))''')
-        
-        conn.commit()
-        conn.close()
+    try:
+        with db_lock:
+            conn = get_db()
+            c = conn.cursor()
+            
+            # Create users table
+            c.execute('''CREATE TABLE IF NOT EXISTS users
+                        (id TEXT PRIMARY KEY, 
+                         name TEXT NOT NULL, 
+                         email TEXT UNIQUE NOT NULL, 
+                         password TEXT NOT NULL,
+                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP)''')
+            
+            # Create password_reset_tokens table
+            c.execute('''CREATE TABLE IF NOT EXISTS password_reset_tokens
+                        (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                         email TEXT NOT NULL,
+                         token TEXT NOT NULL,
+                         expires_at TIMESTAMP NOT NULL,
+                         used INTEGER DEFAULT 0)''')
+            
+            # Create sessions table for tracking active users
+            c.execute('''CREATE TABLE IF NOT EXISTS sessions
+                        (id INTEGER PRIMARY KEY AUTOINCREMENT,
+                         user_id TEXT NOT NULL,
+                         token TEXT NOT NULL,
+                         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                         expires_at TIMESTAMP NOT NULL,
+                         FOREIGN KEY (user_id) REFERENCES users (id))''')
+            
+            conn.commit()
+            conn.close()
+            print("Database initialized successfully")
+    except Exception as e:
+        print(f"Error initializing database: {e}")
 
 # Token required decorator
 def token_required(f):
@@ -158,14 +165,18 @@ def send_otp_email(email, otp):
 
 # Clean up expired tokens (run this periodically)
 def cleanup_expired_tokens():
-    with db_lock:
-        conn = get_db()
-        c = conn.cursor()
-        now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        c.execute("DELETE FROM password_reset_tokens WHERE expires_at < ?", (now,))
-        c.execute("DELETE FROM sessions WHERE expires_at < ?", (now,))
-        conn.commit()
-        conn.close()
+    try:
+        with db_lock:
+            conn = get_db()
+            c = conn.cursor()
+            now = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            c.execute("DELETE FROM password_reset_tokens WHERE expires_at < ?", (now,))
+            c.execute("DELETE FROM sessions WHERE expires_at < ?", (now,))
+            conn.commit()
+            conn.close()
+        print("Expired tokens cleaned up successfully")
+    except Exception as e:
+        print(f"Error cleaning up expired tokens: {e}")
 
 # Routes
 @app.route('/api/login', methods=['POST'])
@@ -241,7 +252,7 @@ def signup():
         has_special = any(not c.isalnum() for c in password)
         
         if not (has_upper and has_lower and has_digit and has_special):
-            return jsonify({'success': False, 'message': 'Password does not meet complexity requirements'}), 400
+            return jsonify({'success': False, 'message': 'Password does not meet complexity requirements'), 400
             
         # Check if user already exists
         with db_lock:
@@ -543,9 +554,25 @@ def logout(current_user):
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
-# Clean up expired tokens on startup
-cleanup_expired_tokens()
+# Health check endpoint
+@app.route('/api/health', methods=['GET'])
+def health_check():
+    return jsonify({'status': 'healthy', 'timestamp': datetime.datetime.now().isoformat()})
+
+# Initialize database and start cleanup scheduler
+def initialize_app():
+    init_db()
+    
+    # Schedule token cleanup to run every hour
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(func=cleanup_expired_tokens, trigger="interval", hours=1)
+    scheduler.start()
+    
+    # Shut down the scheduler when exiting the app
+    atexit.register(lambda: scheduler.shutdown())
+
+# Initialize the application
+initialize_app()
 
 if __name__ == '__main__':
-    init_db()
     app.run(debug=True, port=5000, threaded=True)
