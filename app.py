@@ -252,8 +252,8 @@ def signup():
         has_special = any(not c.isalnum() for c in password)
         
         if not (has_upper and has_lower and has_digit and has_special):
-            return jsonify({'success': False, 'message': 'Password does not meet complexity requirements'), 400
-            
+            return jsonify({'success': False, 'message': 'Password does not meet complexity requirements'}), 400
+
         # Check if user already exists
         with db_lock:
             conn = get_db()
@@ -357,7 +357,8 @@ def social_login(provider):
                 'token': token
             }
         })
-        
+    except Exception as e:
+        return jsonify({'success': False, 'message': str(e)}), 500
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
 
